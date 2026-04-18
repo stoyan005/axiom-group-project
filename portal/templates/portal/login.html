@@ -1,301 +1,263 @@
 {% load static %}
-
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Sky Sign Up</title>
+		<title>Sky Engineering | Login</title>
 		<link
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+			href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500&family=Istok+Web&family=Inter:wght@600;800&display=swap"
 			rel="stylesheet"
 		/>
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-		/>
-		<style>
-			@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
-			:root {
-				--sky-purple: #8a3ffc;
-				--border-color: #e2e8f0;
-				--text-muted: #718096;
-				--error-red: #e53e3e;
-			}
-
-			body,
-			html {
-				height: 100%;
-				margin: 0;
-				font-family: 'Ubuntu', sans-serif;
-				background-color: #000;
-			}
-
-			.main-container {
-				display: flex;
-				height: 100vh;
-				width: 100vw;
-			}
-
-			/* Left Section: Image Background */
-			.image-section {
-				flex: 2; /* Takes up more space like the screenshot */
-				background: url('your-studio-image.jpg') center/cover no-repeat;
-				background-color: #1a202c; /* Fallback */
-			}
-
-			/* Right Section: Form area */
-			.form-section {
-				flex: 1.1;
-				background-color: #0f172a; /* Dark background behind the white card */
-				display: flex;
-				align-items: center;
-				justify-content: flex-end; /* Pushes card to the right edge */
-			}
-
-			.form-card {
-				background: #fff;
-				width: 100%;
-				max-width: 750px;
-				height: 100%;
-				padding: 2.5rem;
-				border-top-left-radius: 30px;
-				border-bottom-left-radius: 30px;
-				display: flex;
-				flex-direction: column;
-				box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
-			}
-
-			/* Top Tabs */
-			.nav-tabs-container {
-				display: flex;
-				border-bottom: 1px solid var(--border-color);
-				margin-bottom: 2rem;
-			}
-
-			.nav-tab {
-				flex: 1;
-				text-align: center;
-				padding: 0.75rem;
-				font-weight: 700;
-				font-size: 0.75rem;
-				letter-spacing: 0.05em;
-				text-transform: uppercase;
-				text-decoration: none;
-				color: #2d3748;
-			}
-
-			.nav-tab.active {
-				border-bottom: 3px solid transparent;
-				border-image: linear-gradient(to right, #ff0080, #7928ca, #0070f3);
-				border-image-slice: 1;
-			}
-
-			.nav-tab.inactive {
-				color: #a0aec0;
-			}
-
-			/* Logo Styling */
-			.brand-logo {
-				text-align: center;
-				margin: 3rem 0rem 4rem 0rem;
-			}
-
-			/* Input Styling */
-			label {
-				display: block;
-				font-size: 0.85rem;
-				font-weight: 600;
-				color: #4a5568;
-				margin-bottom: 0.4rem;
-			}
-
-			.required {
-				color: var(--error-red);
-			}
-
-			.input-wrapper {
-				position: relative;
-				margin-bottom: 1.25rem;
-			}
-
-			.form-control-sky {
-				width: 100%;
-				border: 1px solid var(--border-color);
-				border-radius: 12px;
-				padding: 0.6rem 1rem;
-				background-color: #fff;
-				color: #2d3748;
-				transition: border-color 0.2s;
-			}
-
-			.form-control-sky:focus {
-				outline: none;
-				border-color: var(--sky-purple);
-			}
-
-			.input-icon {
-				position: absolute;
-				right: 1rem;
-				top: 2.5rem;
-				color: #a0aec0;
-			}
-
-			/* Button */
-			.btn-submit {
-				background-color: var(--sky-purple);
-				color: white;
-				border: none;
-				border-radius: 12px;
-				width: 100%;
-				padding: 0.8rem;
-				font-weight: 700;
-				margin-top: 1rem;
-				cursor: pointer;
-			}
-
-			.help-text {
-				text-align: center;
-				margin-top: 1.5rem;
-				font-size: 0.85rem;
-			}
-
-			.help-text a {
-				color: #3182ce;
-				text-decoration: none;
-			}
-
-			.footer-legal {
-				margin-top: auto;
-				text-align: center;
-				font-size: 0.75rem;
-				color: #a0aec0;
-			}
-		</style>
+		<link rel="stylesheet" href="{% static 'css/style.css' %}" />
 	</head>
 	<body>
-		<div class="main-container">
-			<div class="image-section">
-				<img src="{% static 'images/login.jpg' %}" alt="Example Image" />
+		<div class="login-wrapper">
+			<div class="background-container">
+				<img src="{% static 'images/login.jpg' %}" alt="Studio Background" />
 			</div>
 
-			<div class="form-section">
-				<div class="form-card">
-					<div class="nav-tabs-container">
-						<a href="#" class="nav-tab active">Sign Up</a>
-						<a href="#" class="nav-tab inactive">Login</a>
+			<aside class="auth-panel">
+				<nav class="auth-nav">
+					<div class="nav-item">SIGN UP</div>
+					<div class="nav-item active">
+						LOGIN
+						<div class="active-indicator"></div>
 					</div>
+				</nav>
 
-					<div class="brand-logo">
+				<div class="form-wrapper">
+					<div class="logo-area">
 						<img
 							src="{% static 'images/sky_logo.jpg' %}"
-							alt="Example Image"
-							width="150"
+							class="main-logo"
+							alt="Sky Logo"
 						/>
 					</div>
 
-					<form method="POST">
+					<form method="POST" class="login-form">
 						{% csrf_token %}
 
-						<div class="row g-3 mb-3">
-							<div class="col-6">
-								<label>First Name <span class="required">*</span></label>
-								<input
-									type="text"
-									name="first_name"
-									class="form-control-sky"
-									required
-								/>
-							</div>
-							<div class="col-6">
-								<label>Last Name <span class="required">*</span></label>
-								<input
-									type="text"
-									name="last_name"
-									class="form-control-sky"
-									required
-								/>
+						<div class="input-container">
+							<label class="field-label">Email Address</label>
+							<div class="input-field">
+								<input type="email" name="email" required />
+								<span class="field-icon email-icon"></span>
 							</div>
 						</div>
 
-						<div class="input-wrapper">
-							<label>Email Address <span class="required">*</span></label>
-							<input
-								type="email"
-								name="email"
-								class="form-control-sky"
-								required
-							/>
-							<i class="fa-regular fa-envelope input-icon"></i>
+						<div class="input-container">
+							<label class="field-label">Password</label>
+							<div class="input-field">
+								<input type="password" name="password" required />
+								<span class="field-icon eye-icon"></span>
+							</div>
 						</div>
 
-						<div class="input-wrapper">
-							<label>Password <span class="required">*</span></label>
-							<input
-								type="password"
-								name="password"
-								class="form-control-sky"
-								required
-							/>
-							<i class="fa-regular fa-eye input-icon"></i>
+						<div class="form-utilities">
+							<label class="remember-box">
+								<input type="checkbox" name="remember" />
+								<span>Remember me</span>
+							</label>
+							<a href="#" class="forgot-link">Forgot Password?</a>
 						</div>
 
-						<div class="input-wrapper">
-							<label>Department / Team <span class="required">*</span></label>
-							<input
-								type="text"
-								name="department"
-								class="form-control-sky"
-								required
-							/>
+						<div class="form-actions">
+							<button type="submit" class="primary-btn">Login</button>
+							<a href="#" class="help-link">Need help logging in?</a>
 						</div>
-
-						<button type="submit" class="btn-submit">Sign Up</button>
 					</form>
-
-					<div class="help-text">
-						<a href="#">Need help signing up?</a>
-					</div>
-
-					<div class="footer-legal">© 2026 Sky Engineering. All Rights Reserved</div>
 				</div>
-			</div>
+
+				<footer class="footer-note">© 2026 Sky Engineering. All Rights Reserved</footer>
+			</aside>
 		</div>
-		<script>
-			// Toggle password visibility
-			const togglePassword = document.getElementById('toggle-password');
-			const passwordInput = document.getElementById('password');
-
-			togglePassword.addEventListener('click', () => {
-				if (passwordInput.type === 'password') {
-					passwordInput.type = 'text';
-					togglePassword.classList.remove('fa-eye');
-					togglePassword.classList.add('fa-eye-slash');
-				} else {
-					passwordInput.type = 'password';
-					togglePassword.classList.remove('fa-eye-slash');
-					togglePassword.classList.add('fa-eye');
-				}
-			});
-
-			// Tab switch (purely visual)
-			const signupTab = document.getElementById('signup-tab');
-			const loginTab = document.getElementById('login-tab');
-
-			signupTab.addEventListener('click', () => {
-				signupTab.classList.add('active');
-				signupTab.classList.remove('inactive');
-				loginTab.classList.remove('active');
-				loginTab.classList.add('inactive');
-			});
-
-			loginTab.addEventListener('click', () => {
-				loginTab.classList.add('active');
-				loginTab.classList.remove('inactive');
-				signupTab.classList.remove('active');
-				signupTab.classList.add('inactive');
-				alert('Redirect to login page'); // Placeholder
-			});
-		</script>
 	</body>
 </html>
+
+<style>
+	/* Base Resets */
+	* {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+
+	body,
+	html {
+		width: 1920px;
+		height: 1080px;
+		overflow: hidden;
+	}
+
+	.login-wrapper {
+		position: relative;
+		width: 100%;
+		height: 90%;
+	}
+
+	/* Background */
+	.background-container {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+	}
+
+	.background-container img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* Side Panel */
+	.auth-panel {
+		position: absolute;
+		width: 620px;
+		height: 1080px;
+		right: 0;
+		top: 0;
+		background: #f8fafc;
+		border-radius: 32px 0 0 32px;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding-top: 160px;
+	}
+
+	/* Navigation */
+	.auth-nav {
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: flex;
+		width: 100%;
+		height: 65px;
+	}
+
+	.nav-item {
+		flex: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-family: 'Inter', sans-serif;
+		font-weight: 800;
+		font-size: 18px;
+		background: #ffffff;
+		cursor: pointer;
+	}
+
+	.nav-item.active {
+		background: #f2f2f2;
+		font-weight: 600;
+		position: relative;
+	}
+
+	.active-indicator {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: 3px;
+		background: linear-gradient(90deg, #ff6a00 0%, #f107a3 50%, #7b2ff7 100%);
+		box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.25);
+	}
+
+	/* Form Styling */
+	.form-wrapper {
+		width: 524px;
+		display: flex;
+		flex-direction: column;
+		gap: 80px;
+	}
+
+	.logo-area {
+		text-align: center;
+	}
+
+	.main-logo {
+		width: 143px;
+		filter: drop-shadow(0px 5px 10px #a8a8a8);
+	}
+
+	.login-form {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.input-container {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.field-label {
+		font-family: 'Ubuntu', sans-serif;
+		font-size: 20px;
+	}
+
+	.input-field {
+		height: 48px;
+		background: #ffffff;
+		border-radius: 15px;
+		box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.25);
+		display: flex;
+		align-items: center;
+		padding: 0 16px;
+	}
+
+	.input-field input {
+		flex: 1;
+		border: none;
+		outline: none;
+		font-size: 18px;
+	}
+
+	.field-icon {
+		width: 24px;
+		height: 24px;
+		background: #c2c2c2;
+	}
+
+	/* Utils & Actions */
+	.form-utilities {
+		display: flex;
+		justify-content: space-between;
+		font-family: 'Istok Web', sans-serif;
+		font-size: 20px;
+	}
+
+	.forgot-link {
+		color: #006fff;
+		text-decoration: none;
+	}
+
+	.primary-btn {
+		width: 100%;
+		height: 57px;
+		background: #802df4;
+		color: #fff;
+		border: none;
+		border-radius: 15px;
+		font-family: 'Ubuntu';
+		font-size: 20px;
+		font-weight: 500;
+		cursor: pointer;
+	}
+
+	.help-link {
+		display: block;
+		text-align: center;
+		margin-top: 24px;
+		font-family: 'Istok Web';
+		color: #006fff;
+		text-decoration: none;
+	}
+
+	.footer-note {
+		margin-top: auto;
+		padding-bottom: 20px;
+		font-family: 'Ubuntu';
+		color: #5c5c5c;
+		font-size: 18px;
+	}
+</style>
