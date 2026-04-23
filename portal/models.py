@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class Organization(models.Model):
     name = models.CharField(max_length=255)
@@ -10,8 +10,8 @@ class Organization(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=255)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="departments")
-    leader = models.CharField(max_length=255)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    leader = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
@@ -26,9 +26,8 @@ class TeamType(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=255)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name="teams")
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
     team_type = models.ForeignKey(TeamType, on_delete=models.SET_NULL, null=True)
-    specialization = models.CharField(max_length=255, blank=True)
 
     dependencies = models.ManyToManyField("self", symmetrical=False, blank=True)
 
