@@ -4,11 +4,6 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Organization, Department, Team
 
-
-# =========================
-# AUTH PAGES
-# =========================
-
 def auth_page(request):
     return render(request, "portal/auth.html")
 
@@ -24,10 +19,6 @@ def signup(request):
 
     return render(request, 'portal/signup.html', {'form': form})
 
-
-# =========================
-# DASHBOARD / HOME
-# =========================
 
 @login_required
 def home(request):
