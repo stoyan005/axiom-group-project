@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('sky-theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+        })();
+    </script>
+    <title>{% block title %}Sky Engineering Portal{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sky-orange: #ff5a1f;
+            --sky-pink: #ef2d7d;
+            --sky-purple: #8f39ff;
+            --sky-blue: #4256ff;
+            --sky-gradient: linear-gradient(135deg, #ff5a1f 0%, #ef2d7d 42%, #8f39ff 75%, #4256ff 100%);
+            --bg: #f4f4f7;
+            --surface: #ffffff;
+            --surface-soft: #fafafd;
+            --surface-muted: #f1f1f6;
+            --line: #e4e6ec;
+            --text: #1b1d22;
+            --text-soft: #646b79;
+            --text-muted: #9aa1ad;
+            --shadow-soft: 0 12px 35px rgba(17, 19, 27, 0.06);
+            --shadow-panel: 0 18px 50px rgba(17, 19, 27, 0.08);
+        }
+        :root[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #0e1015;
+            --surface: #161a21;
+            --surface-soft: #131720;
+            --surface-muted: #1d232d;
+            --line: #2a303b;
+            --text: #f4f5f7;
+            --text-soft: #c5cad4;
+            --text-muted: #8f97a5;
+            --shadow-soft: 0 12px 35px rgba(0, 0, 0, 0.28);
+            --shadow-panel: 0 18px 50px rgba(0, 0, 0, 0.34);
+        }
+
+        :root[data-theme="dark"] body,
+        :root[data-theme="dark"] .auth-panel,
+        :root[data-theme="dark"] .auth-card,
+        :root[data-theme="dark"] .auth-title,
+        :root[data-theme="dark"] label,
+        :root[data-theme="dark"] p,
+        :root[data-theme="dark"] .text-dark {
+            color: var(--text) !important;
+        }
+        :root[data-theme="dark"] .auth-subtitle,
+        :root[data-theme="dark"] .auth-helper,
+        :root[data-theme="dark"] .text-muted {
+            color: var(--text-muted) !important;
+        }
+        :root[data-theme="dark"] .form-control,
+        :root[data-theme="dark"] .form-select {
+            background: var(--surface-muted) !important;
+            color: var(--text) !important;
+            border-color: #3a414f !important;
+        }
+        :root[data-theme="dark"] .form-control::placeholder {
+            color: #b5bcc8 !important;
+            opacity: 1;
+        }
+        * { box-sizing: border-box; }
+        html, body { margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:'DM Sans', system-ui, sans-serif; }
+        body { transition: background-color .2s ease, color .2s ease; }
+        .auth-theme-toggle { position:absolute; top:24px; right:24px; z-index:4; height:40px; border-radius:999px; border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-soft); color:var(--text); display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; padding:0 14px; font-weight:600; font-size:0.86rem; }
+        .auth-theme-toggle:hover { background:var(--surface-muted); }
+        :root[data-theme="dark"] .auth-theme-toggle { color:var(--text) !important; }
+        .auth-shell { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:28px; }
+        .auth-frame { width:min(1380px,100%); min-height:calc(100vh - 56px); background:var(--surface); border:1px solid var(--line); border-radius:30px; overflow:hidden; box-shadow:var(--shadow-panel); display:grid; grid-template-columns:minmax(0,2fr) minmax(360px,0.95fr); }
+        .auth-visual { position:relative; min-height:720px; background:#09111f url('{% static "img/auth_studio.png" %}') center center / cover no-repeat; }
+        .auth-visual::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(9,17,31,.08) 0%, rgba(9,17,31,.18) 100%); }
+        .auth-panel { position:relative; background:var(--surface); display:flex; align-items:center; justify-content:center; padding:40px 34px; }
+        .auth-card { width:100%; max-width:390px; }
+        .auth-logo { text-align:center; margin-bottom:26px; }
+        .auth-logo img { width:82px; height:auto; }
+        .auth-title { font-size:1.9rem; font-weight:700; letter-spacing:-0.04em; margin-bottom:8px; text-align:center; }
+        .auth-subtitle { color:var(--text-muted); text-align:center; font-size:0.95rem; margin-bottom:28px; }
+        .form-control, .form-select { background:var(--surface) !important; color:var(--text) !important; border:1px solid var(--line) !important; border-radius:16px !important; min-height:48px; padding:0.82rem 1rem !important; box-shadow:none !important; }
+        .form-control::placeholder { color:var(--text-muted) !important; }
+        .form-control:focus, .form-select:focus { border-color:#9d5cff !important; box-shadow:0 0 0 4px rgba(143,57,255,0.12) !important; }
+        .form-label { color:var(--text-soft); font-weight:600; font-size:0.9rem; margin-bottom:0.45rem; }
+        .btn-primary { background:linear-gradient(90deg, #8f39ff 0%, #7f2cff 100%) !important; color:#fff !important; border:none !important; border-radius:14px !important; padding:0.72rem 1.2rem !important; font-weight:600 !important; box-shadow:0 10px 22px rgba(143,57,255,0.24); }
+        .password-field { position:relative; }
+        .password-input-wrap { position:relative; }
+        .password-input-wrap .form-control { padding-right:48px !important; }
+        .password-input-wrap .toggle-password { position:absolute; right:16px; top:50%; transform:translateY(-50%); width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; background:none; border:none; color:var(--text-muted); cursor:pointer; padding:0; z-index:2; line-height:1; }
+        .password-input-wrap .toggle-password i { display:block; line-height:1; font-size:1rem; }
+        .auth-helper { color:var(--text-muted); font-size:0.82rem; margin-top:8px; margin-bottom:18px; }
+        .django-messages { position:fixed; top:16px; right:76px; z-index:1300; max-width:380px; }
+        .alert { border:1px solid var(--line) !important; border-radius:16px !important; background:var(--surface) !important; color:var(--text) !important; box-shadow:var(--shadow-soft); }
+        .status-list { display:grid; gap:12px; margin:18px 0 24px; }
+        .status-item { display:flex; align-items:center; gap:10px; font-size:0.95rem; }
+        .status-item.success { color:#4ba55f; }
+        .status-item.error { color:#d45a5a; }
+        @media (max-width:1100px){ .auth-frame { grid-template-columns:1fr; } .auth-visual { display:none; } }
+        @media (max-width:768px){ .auth-shell { padding:18px; } .auth-panel { padding:28px 20px; } }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if messages %}<div class="django-messages">{% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}</div>{% endif %}
+    {% block content %}{% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            const root = document.documentElement;
+            const button = document.getElementById('theme-toggle');
+            const icon = document.getElementById('theme-toggle-icon');
+            function applyTheme(theme) {
+                root.setAttribute('data-theme', theme);
+                localStorage.setItem('sky-theme', theme);
+                if (icon) icon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
+            }
+            applyTheme(root.getAttribute('data-theme') || 'light');
+            if (button) button.addEventListener('click', function(){ applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
+            document.querySelectorAll('.toggle-password').forEach(function(button) {
+                button.addEventListener('click', function () {
+                    const input = document.getElementById(this.dataset.target); if (!input) return;
+                    const show = input.type === 'password'; input.type = show ? 'text' : 'password';
+                    const ic = this.querySelector('i'); if (ic) ic.className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+                });
+            });
+        })();
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

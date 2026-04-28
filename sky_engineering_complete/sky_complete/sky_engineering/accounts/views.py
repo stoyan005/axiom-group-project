@@ -59,14 +59,24 @@ def change_password(request):
     """Allow logged-in users to change their password."""
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)  # Keep user logged in
-            messages.success(request, 'Password changed successfully.')
-            return redirect('accounts:profile')
     else:
         form = PasswordChangeForm(request.user)
-        for field in form.fields.values():
-            field.widget.attrs.update({'class': 'form-control'})
+
+    placeholders = {
+        'old_password': 'Enter current password',
+        'new_password1': 'Enter new password',
+        'new_password2': 'Re-enter new password',
+    }
+    for name, field in form.fields.items():
+        field.widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': placeholders.get(name, field.label),
+        })
+
+    if request.method == 'POST' and form.is_valid():
+        user = form.save()
+        update_session_auth_hash(request, user)  # Keep user logged in
+        messages.success(request, 'Password changed successfully.')
+        return redirect('accounts:profile')
 
     return render(request, 'registration/change_password.html', {'form': form})

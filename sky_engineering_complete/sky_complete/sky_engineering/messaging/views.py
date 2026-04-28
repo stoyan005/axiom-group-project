@@ -17,8 +17,11 @@ def inbox(request):
         message__status=Message.STATUS_SENT
     ).select_related('message', 'message__sender').order_by('-message__sent_at')
 
+    selected_status = user_statuses[0] if user_statuses else None
+
     return render(request, 'messaging/inbox.html', {
         'user_statuses': user_statuses,
+        'selected_status': selected_status,
         'active_tab': 'inbox',
     })
 
@@ -160,9 +163,16 @@ def view_message(request, message_id):
         status_obj = MessageRecipientStatus.objects.get(message=msg, user=request.user)
         status_obj.mark_read()
 
+    inbox_statuses = MessageRecipientStatus.objects.filter(
+        user=request.user,
+        is_deleted=False,
+        message__status=Message.STATUS_SENT
+    ).select_related('message', 'message__sender').order_by('-message__sent_at')
+
     return render(request, 'messaging/view_message.html', {
         'message': msg,
         'is_recipient': is_recipient,
+        'user_statuses': inbox_statuses,
         'active_tab': 'inbox',
     })
 

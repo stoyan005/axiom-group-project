@@ -1,72 +1,53 @@
 {% extends "base/base.html" %}
 {% block title %}Drafts – Sky Engineering Portal{% endblock %}
-
-{% block extra_css %}
-<style>
-.msg-subnav{display:flex;gap:4px;margin-bottom:16px;}
-.msn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;color:var(--t1);cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;transition:background .1s;}
-.msn:hover{background:var(--sky-light);}
-.msn.active{background:var(--purple-light);color:var(--purple);font-weight:600;}
-.msn-badge{background:var(--sky-gradient-135);color:#fff;font-size:9px;padding:1px 6px;border-radius:10px;font-weight:700;}
-.badge-draft{background:#FFF3E0;color:#E65100;font-size:9px;padding:2px 7px;border-radius:6px;font-weight:600;}
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="page-header d-flex justify-content-between align-items-center">
-    <h2>📄 Drafts</h2>
-    <a href="{% url 'messaging:compose' %}" class="btn-sky btn btn-sm">✏️ New Message</a>
-</div>
-
-<div class="msg-subnav">
-    <a href="{% url 'messaging:inbox' %}" class="msn">📥 Inbox {% if unread_count %}<span class="msn-badge">{{ unread_count }}</span>{% endif %}</a>
-    <a href="{% url 'messaging:sent' %}" class="msn">📤 Sent</a>
-    <a href="{% url 'messaging:drafts' %}" class="msn active">📄 Drafts</a>
-</div>
-
-<div class="card">
-    <div class="card-body p-0">
-        {% if draft_messages %}
-        <div class="table-responsive">
-            <table class="table mb-0">
-                <thead>
-                    <tr>
-                        <th>To (draft recipients)</th>
-                        <th>Subject</th>
-                        <th style="width:155px;">Last saved</th>
-                        <th style="width:100px;"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for msg in draft_messages %}
-                    <tr class="msg-row" onclick="window.location='{% url 'messaging:edit_draft' msg.id %}'">
-                        <td class="align-middle" style="color:var(--t1);font-size:12px;">
-                            {% if msg.messagerecipientstatus_set.exists %}{{ msg.get_recipients_display }}{% else %}<em style="color:var(--t2);">No recipients yet</em>{% endif %}
-                        </td>
-                        <td class="align-middle">
-                            {% if msg.subject %}<span style="font-weight:500;">{{ msg.subject }}</span>{% else %}<em style="color:var(--t2);">(No subject)</em>{% endif %}
-                            <span class="badge-draft ms-2">Draft</span>
-                        </td>
-                        <td class="align-middle" style="color:var(--t2);font-size:11px;">{{ msg.updated_at|date:"d M Y H:i" }}</td>
-                        <td class="align-middle text-end" onclick="event.stopPropagation();">
-                            <a href="{% url 'messaging:edit_draft' msg.id %}" class="btn btn-sm btn-light" title="Edit">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="{% url 'messaging:delete_message' msg.id %}" class="btn btn-sm btn-light text-danger" onclick="return confirm('Delete this draft?')">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="workspace-card">
+    <div class="page-heading">
+        <div>
+            <div class="eyebrow">Saved work</div>
+            <h2>Drafts</h2>
         </div>
-        {% else %}
-        <div class="text-center py-5" style="color:var(--t2);">
-            <div style="font-size:3rem;opacity:.2;margin-bottom:12px;">📄</div>
-            <p class="mb-0">No saved drafts.</p>
+        <a href="{% url 'messaging:compose' %}" class="btn btn-primary">New Message</a>
+    </div>
+
+    <div class="pill-tabs">
+        <a href="{% url 'messaging:inbox' %}" class="pill-tab">Inbox{% if unread_count %} ({{ unread_count }}){% endif %}</a>
+        <a href="{% url 'messaging:sent' %}" class="pill-tab">Sent</a>
+        <a href="{% url 'messaging:drafts' %}" class="pill-tab active">Drafts</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body p-0">
+            {% if draft_messages %}
+            <div class="table-responsive">
+                <table class="table mb-0 align-middle">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Recipients</th>
+                            <th>Subject</th>
+                            <th>Last saved</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for msg in draft_messages %}
+                        <tr onclick="window.location='{% url 'messaging:edit_draft' msg.id %}'" style="cursor:pointer;">
+                            <td class="ps-4">{% if msg.messagerecipientstatus_set.exists %}{{ msg.get_recipients_display }}{% else %}<span class="text-muted">No recipients yet</span>{% endif %}</td>
+                            <td>{{ msg.subject|default:"No subject" }} <span class="badge text-bg-warning ms-2">Draft</span></td>
+                            <td>{{ msg.updated_at|date:"d M Y, g:i A" }}</td>
+                            <td class="text-end pe-4" onclick="event.stopPropagation();">
+                                <a href="{% url 'messaging:edit_draft' msg.id %}" class="btn btn-light btn-sm"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'messaging:delete_message' msg.id %}" class="btn btn-light btn-sm" onclick="return confirm('Delete this draft?')"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-5 text-center text-muted">No drafts saved.</div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

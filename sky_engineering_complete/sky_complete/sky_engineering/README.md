@@ -48,3 +48,8 @@ Then open http://127.0.0.1:8000 in your browser.
 ### Apps
 - **accounts** — User registration, login, profile, password change
 - **messaging** — Inbox, sent, drafts, compose, view, delete, read-status
+
+### UI Update
+- Added a moon/sun theme toggle in the top navigation.
+- The selected theme is saved in `localStorage` as `sky-theme`, so the portal remembers the user's light/dark preference across pages.
+- Shared CSS variables in `templates/base/base.html` now support both light mode and dark mode across authentication, messaging, profile, and password pages.

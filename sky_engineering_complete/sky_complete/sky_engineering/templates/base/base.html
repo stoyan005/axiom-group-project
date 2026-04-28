@@ -4,349 +4,631 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('sky-theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+        })();
+    </script>
     <title>{% block title %}Sky Engineering Portal{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ── Sky 2025 Brand Variables ── */
         :root {
-            --sky-orange:  #FF5500;
-            --sky-red:     #FF1060;
-            --sky-pink:    #FF0090;
-            --sky-purple:  #CC00DD;
-            --sky-violet:  #8800FF;
-            --sky-blue:    #3355FF;
-            --sky-gradient: linear-gradient(90deg,#FF5500 0%,#FF1060 25%,#CC00DD 58%,#3355FF 100%);
-            --sky-gradient-135: linear-gradient(135deg,#FF5500 0%,#FF1060 25%,#CC00DD 58%,#3355FF 100%);
+            --sky-orange: #ff5a1f;
+            --sky-pink: #ef2d7d;
+            --sky-purple: #8f39ff;
+            --sky-blue: #4256ff;
+            --sky-gradient: linear-gradient(135deg, #ff5a1f 0%, #ef2d7d 42%, #8f39ff 75%, #4256ff 100%);
+            --bg: #f4f4f7;
+            --surface: #ffffff;
+            --surface-soft: #fafafd;
+            --surface-muted: #f1f1f6;
+            --line: #e4e6ec;
+            --line-strong: #d6d9e3;
+            --text: #1b1d22;
+            --text-soft: #646b79;
+            --text-muted: #9aa1ad;
+            --sidebar-width: 176px;
+            --header-height: 72px;
+            --shadow-soft: 0 12px 35px rgba(17, 19, 27, 0.06);
+            --shadow-panel: 0 18px 50px rgba(17, 19, 27, 0.08);
+            --message-self: #e9d2ff;
+            --message-other: #efeff2;
+            --pill-active: #e7e7ea;
+            --hover: #f6f6f9;
+        }
 
-            /* Light theme (matching hi-fi) */
-            --bg: #F5F5F7;
-            --white: #FFFFFF;
-            --border: #E5E5EA;
-            --t0: #111111;
-            --t1: #555555;
-            --t2: #999999;
-            --purple: #8B2FC9;
-            --purple-light: #F3EEFB;
-            --sky-light: #F0EAFC;
-            --sidebar-width: 200px;
+        :root[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #0e1015;
+            --surface: #161a21;
+            --surface-soft: #131720;
+            --surface-muted: #1d232d;
+            --line: #2a303b;
+            --line-strong: #373e4c;
+            --text: #f4f5f7;
+            --text-soft: #c5cad4;
+            --text-muted: #8f97a5;
+            --shadow-soft: 0 12px 35px rgba(0, 0, 0, 0.28);
+            --shadow-panel: 0 18px 50px rgba(0, 0, 0, 0.34);
+            --message-self: #4f306f;
+            --message-other: #242a34;
+            --pill-active: #262c37;
+            --hover: #1c212b;
+        }
+
+
+        /* Dark mode contrast fixes */
+        :root[data-theme="dark"] body,
+        :root[data-theme="dark"] .workspace-card,
+        :root[data-theme="dark"] .card,
+        :root[data-theme="dark"] .thread-panel,
+        :root[data-theme="dark"] .chat-panel,
+        :root[data-theme="dark"] .topbar,
+        :root[data-theme="dark"] .app-sidebar,
+        :root[data-theme="dark"] .auth-panel {
+            color: var(--text) !important;
+        }
+
+        :root[data-theme="dark"] p,
+        :root[data-theme="dark"] h1,
+        :root[data-theme="dark"] h2,
+        :root[data-theme="dark"] h3,
+        :root[data-theme="dark"] h4,
+        :root[data-theme="dark"] h5,
+        :root[data-theme="dark"] h6,
+        :root[data-theme="dark"] label,
+        :root[data-theme="dark"] .fw-bold,
+        :root[data-theme="dark"] .fw-semibold,
+        :root[data-theme="dark"] .text-dark,
+        :root[data-theme="dark"] .table,
+        :root[data-theme="dark"] .dropdown-item,
+        :root[data-theme="dark"] .bubble,
+        :root[data-theme="dark"] .thread-name {
+            color: var(--text) !important;
+        }
+
+        :root[data-theme="dark"] .text-muted,
+        :root[data-theme="dark"] .eyebrow,
+        :root[data-theme="dark"] .thread-preview,
+        :root[data-theme="dark"] .thread-time,
+        :root[data-theme="dark"] .bubble-meta,
+        :root[data-theme="dark"] .auth-subtitle,
+        :root[data-theme="dark"] .auth-helper {
+            color: var(--text-muted) !important;
+        }
+
+        :root[data-theme="dark"] .form-control,
+        :root[data-theme="dark"] .form-select,
+        :root[data-theme="dark"] .topbar-search input,
+        :root[data-theme="dark"] .chat-search input {
+            color: var(--text) !important;
+            background: var(--surface-muted) !important;
+            border-color: var(--line-strong) !important;
+        }
+
+        :root[data-theme="dark"] .form-control::placeholder,
+        :root[data-theme="dark"] .topbar-search input::placeholder,
+        :root[data-theme="dark"] .chat-search input::placeholder {
+            color: #b5bcc8 !important;
+            opacity: 1;
+        }
+
+        :root[data-theme="dark"] a,
+        :root[data-theme="dark"] .side-link,
+        :root[data-theme="dark"] .pill-tab,
+        :root[data-theme="dark"] .meta-strip,
+        :root[data-theme="dark"] .thread-item,
+        :root[data-theme="dark"] .chat-user,
+        :root[data-theme="dark"] .composer-input,
+        :root[data-theme="dark"] td,
+        :root[data-theme="dark"] th {
+            color: var(--text) !important;
+        }
+
+        :root[data-theme="dark"] .side-link:not(.active),
+        :root[data-theme="dark"] .pill-tab:not(.active) {
+            color: var(--text-soft) !important;
         }
 
         * { box-sizing: border-box; }
 
-        body {
-            font-family: 'DM Sans', system-ui, sans-serif;
+        html, body {
+            margin: 0;
+            min-height: 100%;
             background: var(--bg);
-            color: var(--t0);
+            color: var(--text);
+            font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body { transition: background-color .2s ease, color .2s ease; }
+        a { color: inherit; }
+
+        .theme-fab {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1200;
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--surface);
+            box-shadow: var(--shadow-soft);
+            color: var(--text);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .theme-fab:hover {
+            background: var(--surface-muted);
+        }
+
+        .app-shell {
             min-height: 100vh;
-            font-size: 0.9rem;
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
         }
 
-        /* ── Gradient accent line ── */
-        .sky-top-bar {
-            position: fixed; top: 0; left: 0; right: 0;
-            height: 3px; background: var(--sky-gradient); z-index: 9999;
+        .app-sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--line);
+            padding: 22px 14px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
         }
 
-        /* ── Navbar ── */
-        .navbar-sky {
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            height: 54px;
+        .app-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
         }
-        .sky-logo {
-            height: 26px; width: auto;
-        }
-        .nav-sub {
-            font-size: 9px; text-transform: uppercase; letter-spacing: 2px;
-            color: var(--t2); font-weight: 400;
-        }
-        .navbar-sky .nav-link { color: var(--t1) !important; }
-        .navbar-sky .nav-link:hover { color: var(--t0) !important; }
 
-        /* ── Sidebar ── */
-        #sidebar {
-            width: var(--sidebar-width);
-            min-height: calc(100vh - 57px);
-            background: var(--white);
-            border-right: 1px solid var(--border);
-            position: fixed; top: 57px; left: 0;
-            overflow-y: auto; z-index: 100;
-            padding: 10px 6px 24px;
+        .app-logo img {
+            width: 72px;
+            height: auto;
         }
-        #sidebar .nav-link {
-            color: var(--t1);
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin: 1px 0;
-            display: flex; align-items: center; gap: 9px;
-            font-size: 12px; font-weight: 500;
-            transition: background .1s, color .1s;
+
+        .nav-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
-        #sidebar .nav-link:hover { background: var(--bg); color: var(--t0); }
-        #sidebar .nav-link.active {
-            background: var(--purple-light);
-            color: var(--purple);
+
+        .side-link {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 11px 13px;
+            text-decoration: none;
+            border-radius: 14px;
+            color: var(--text-soft);
+            font-size: 0.94rem;
+            font-weight: 500;
+            transition: background .15s ease, color .15s ease;
+            white-space: nowrap;
+            overflow: visible;
+        }
+
+        .side-link i {
+            font-size: 1.05rem;
+            width: 18px;
+        }
+
+        .side-link:hover { background: var(--hover); color: var(--text); }
+        .side-link.active {
+            background: var(--pill-active);
+            color: var(--text);
             font-weight: 600;
         }
-        .sidebar-section {
-            padding: 14px 12px 4px;
-            font-size: 9px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 1.8px;
-            color: var(--t2);
+
+        .side-footer {
+            margin-top: auto;
+            padding-top: 10px;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            text-align: center;
         }
-        .badge-gradient {
-            background: var(--sky-gradient-135);
-            color: #fff; font-size: 9px;
-            padding: 2px 7px; border-radius: 10px; font-weight: 700;
+
+        .app-main {
+            min-width: 0;
+            padding: 18px 28px;
         }
-        .nav-badge {
+
+        .topbar {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft);
+            min-height: var(--header-height);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 20px;
+            margin-bottom: 18px;
+        }
+
+        .topbar-search {
+            flex: 1 1 420px;
+            max-width: 520px;
+            position: relative;
+        }
+
+        .topbar-search i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .topbar-search input {
+            width: 100%;
+            border: none;
+            background: var(--surface-muted);
+            color: var(--text);
+            border-radius: 999px;
+            padding: 14px 18px 14px 42px;
+            font-size: 0.92rem;
+            outline: none;
+        }
+
+        .topbar-search input::placeholder { color: var(--text-muted); }
+
+        .topbar-actions {
             margin-left: auto;
-            background: var(--sky-gradient-135);
-            color: #fff; font-size: 9px;
-            padding: 1px 5px; border-radius: 10px; font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* ── Compose button ── */
-        .btn-compose {
-            display: block; width: calc(100% - 0px);
-            background: var(--sky-gradient-135);
-            color: #fff !important; border: none;
-            border-radius: 9px; padding: 10px 12px;
-            font-size: 12px; font-weight: 700;
-            text-align: center; text-decoration: none;
-            margin: 4px 0 8px; transition: opacity .2s;
-        }
-        .btn-compose:hover { opacity: .88; }
-
-        /* ── Main Content ── */
-        #main-content {
-            margin-left: var(--sidebar-width);
-            padding: 28px 32px;
-            min-height: calc(100vh - 57px);
-        }
-
-        /* ── Cards ── */
-        .card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        }
-        .card-header {
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 999px;
+            border: 1px solid transparent;
             background: transparent;
-            border-bottom: 1px solid var(--border);
-            font-weight: 600; padding: 14px 20px;
-        }
-        .card-footer {
-            background: #FAFAFA;
-            border-top: 1px solid var(--border);
-            padding: 12px 20px;
+            color: var(--text);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
 
-        /* ── Page header ── */
-        .page-header {
-            margin-bottom: 20px; padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
-        }
-        .page-header h2 {
-            font-size: 1.4rem; font-weight: 700;
-            margin: 0; letter-spacing: -.3px; color: var(--t0);
+        .icon-btn:hover {
+            background: var(--surface-muted);
+            border-color: var(--line);
         }
 
-        /* ── Tables ── */
-        .table { color: var(--t0); margin: 0; }
-        .table thead th {
-            background: #FAFAFA;
-            border-bottom: 1px solid var(--border);
-            color: var(--t2); font-size: 9px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 1px;
-            padding: 10px 14px;
-        }
-        .table tbody td {
-            border-bottom: 1px solid var(--border);
-            padding: 12px 14px; vertical-align: middle;
-        }
-        .table tbody tr:last-child td { border-bottom: none; }
-        .msg-row { cursor: pointer; transition: background .1s; }
-        .msg-row:hover { background: #FAFAFA !important; }
-        .msg-row.unread { background: #FEFAFF; }
-
-        /* ── Avatar ── */
-        .avatar {
-            width: 32px; height: 32px;
-            background: var(--sky-gradient-135);
-            color: #fff; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; font-weight: 700; flex-shrink: 0;
+        .avatar-chip {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--sky-gradient);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 6px 18px rgba(143, 57, 255, 0.28);
         }
 
-        /* ── Sky button ── */
-        .btn-sky {
-            background: var(--sky-gradient-135) !important;
-            border: none !important; color: #fff !important;
-            font-weight: 600 !important; border-radius: 8px !important;
-            transition: opacity .2s !important;
+        .workspace-card, .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 26px;
+            box-shadow: var(--shadow-panel);
         }
-        .btn-sky:hover { opacity: .88 !important; color: #fff !important; }
 
-        /* ── Secondary buttons ── */
-        .btn-outline-secondary {
-            border-color: var(--border) !important;
-            color: var(--t1) !important; border-radius: 8px !important;
+        .card { box-shadow: var(--shadow-soft); border-radius: 22px; }
+
+        .workspace-card {
+            padding: 22px;
+            min-height: calc(100vh - 128px);
+            overflow: hidden;
         }
-        .btn-outline-secondary:hover {
-            background: var(--bg) !important; color: var(--t0) !important;
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
         }
+
+        .page-heading h1, .page-heading h2, .page-heading h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        .eyebrow {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        .btn-sky, .btn-primary {
+            background: linear-gradient(90deg, #8f39ff 0%, #7f2cff 100%) !important;
+            color: #fff !important;
+            border: none !important;
+            border-radius: 14px !important;
+            padding: 0.72rem 1.2rem !important;
+            font-weight: 600 !important;
+            box-shadow: 0 10px 22px rgba(143, 57, 255, 0.24);
+        }
+
+        .btn-sky:hover, .btn-primary:hover { opacity: 0.92; }
+
+        .btn-outline-secondary, .btn-light, .btn-outline-danger {
+            border-radius: 14px !important;
+            padding: 0.72rem 1.05rem !important;
+            background: var(--surface) !important;
+            color: var(--text) !important;
+            border: 1px solid var(--line) !important;
+        }
+
+        .btn-light:hover, .btn-outline-secondary:hover, .btn-outline-danger:hover {
+            background: var(--surface-muted) !important;
+        }
+
         .btn-outline-danger {
-            border-color: rgba(220,53,69,.4) !important;
-            color: #dc3545 !important; border-radius: 8px !important;
+            color: #d45656 !important;
         }
-        .btn-outline-danger:hover { background: rgba(220,53,69,.06) !important; }
-        .btn-light {
-            background: var(--bg) !important;
-            border: 1px solid var(--border) !important;
-            color: var(--t1) !important; border-radius: 8px !important;
-        }
-        .btn-light:hover { background: #eaeaec !important; color: var(--t0) !important; }
-        .btn-light.text-danger { color: #dc3545 !important; }
 
-        /* ── Forms ── */
         .form-control, .form-select {
-            border: 1px solid var(--border) !important;
-            border-radius: 8px !important;
-            padding: 9px 13px !important;
-            color: var(--t0) !important;
-            background: var(--white) !important;
+            background: var(--surface) !important;
+            color: var(--text) !important;
+            border: 1px solid var(--line) !important;
+            border-radius: 16px !important;
+            min-height: 48px;
+            padding: 0.82rem 1rem !important;
+            box-shadow: none !important;
         }
+
+        textarea.form-control { min-height: 180px; }
+        .form-control::placeholder { color: var(--text-muted) !important; }
         .form-control:focus, .form-select:focus {
-            border-color: var(--purple) !important;
-            box-shadow: 0 0 0 3px rgba(139,47,201,.1) !important;
+            border-color: #9d5cff !important;
+            box-shadow: 0 0 0 4px rgba(143, 57, 255, 0.12) !important;
         }
+
         .form-label {
-            font-size: 10px; font-weight: 700; color: var(--t1);
-            text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px;
-        }
-        .form-text { color: var(--t2) !important; font-size: 11px; }
-        select[multiple].form-control, select[multiple].form-select {
-            height: 160px !important;
+            color: var(--text-soft);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.45rem;
+            text-transform: none;
+            letter-spacing: 0;
         }
 
-        /* ── Dropdown ── */
         .dropdown-menu {
-            border: 1px solid var(--border) !important;
-            border-radius: 10px !important;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
-            padding: 6px !important;
+            background: var(--surface) !important;
+            border: 1px solid var(--line) !important;
+            border-radius: 16px !important;
+            box-shadow: var(--shadow-soft) !important;
+            padding: 8px;
         }
+
         .dropdown-item {
-            border-radius: 7px !important; font-size: 13px !important;
-            padding: 8px 12px !important; color: var(--t1) !important;
+            color: var(--text-soft) !important;
+            border-radius: 12px !important;
+            padding: 10px 12px !important;
         }
-        .dropdown-item:hover { background: var(--bg) !important; color: var(--t0) !important; }
-        .dropdown-item.text-danger { color: #dc3545 !important; }
-        .dropdown-divider { border-color: var(--border) !important; margin: 4px 0 !important; }
 
-        /* ── Flash messages ── */
+        .dropdown-item:hover { background: var(--surface-muted) !important; color: var(--text) !important; }
+        .text-muted { color: var(--text-muted) !important; }
+        .table > :not(caption) > * > * { background: transparent !important; color: inherit !important; border-color: var(--line) !important; }
+
         .django-messages {
-            position: fixed; top: 66px; right: 16px;
-            z-index: 9999; min-width: 300px;
+            position: fixed;
+            top: 16px;
+            right: 76px;
+            z-index: 1300;
+            max-width: 380px;
         }
-        .alert { border-radius: 10px !important; }
-        .alert-success { border-left: 3px solid #22c55e !important; }
-        .alert-danger  { border-left: 3px solid #ef4444 !important; }
-        .alert-info    { border-left: 3px solid var(--sky-blue) !important; }
 
-        /* ── Misc ── */
-        .text-muted { color: var(--t2) !important; }
-        hr { border-color: var(--border) !important; }
-        .badge.rounded-pill { font-size: .6rem !important; }
+        .alert {
+            border: 1px solid var(--line) !important;
+            border-radius: 16px !important;
+            background: var(--surface) !important;
+            color: var(--text) !important;
+            box-shadow: var(--shadow-soft);
+        }
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); border-radius: 3px; }
+        .auth-shell {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px;
+        }
+
+        .auth-frame {
+            width: min(1380px, 100%);
+            min-height: calc(100vh - 56px);
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: var(--shadow-panel);
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(360px, 0.95fr);
+        }
+
+        .auth-visual {
+            position: relative;
+            min-height: 720px;
+            background: #09111f url('{% static "img/auth_studio.png" %}') center center / cover no-repeat;
+        }
+
+        .auth-visual::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(9,17,31,.08) 0%, rgba(9,17,31,.18) 100%);
+        }
+
+        .auth-panel {
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 34px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 390px;
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+
+        .auth-logo img { width: 82px; height: auto; }
+
+        .auth-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .auth-subtitle {
+            color: var(--text-muted);
+            text-align: center;
+            font-size: 0.95rem;
+            margin-bottom: 28px;
+        }
+
+        .password-field {
+            position: relative;
+        }
+
+        .password-field .form-control {
+            padding-right: 48px !important;
+        }
+
+        .password-field .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 41px;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0;
+            z-index: 2;
+        }
+
+        .auth-helper {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            margin-top: 8px;
+            margin-bottom: 18px;
+        }
+
+        .status-list {
+            display: grid;
+            gap: 12px;
+            margin: 18px 0 24px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+
+        .status-item.success { color: #4ba55f; }
+        .status-item.error { color: #d45a5a; }
+
+        .pill-tabs {
+            display: inline-flex;
+            gap: 8px;
+            background: var(--surface-muted);
+            padding: 6px;
+            border-radius: 999px;
+            margin-bottom: 18px;
+        }
+
+        .pill-tab {
+            border-radius: 999px;
+            padding: 9px 14px;
+            text-decoration: none;
+            color: var(--text-soft);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .pill-tab.active {
+            background: var(--surface);
+            color: var(--text);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .sr-only-preview {
+            position: absolute;
+            left: -9999px;
+        }
+
+        @media (max-width: 1100px) {
+            .auth-frame { grid-template-columns: 1fr; }
+            .auth-visual { display: none; }
+            .app-shell { grid-template-columns: 1fr; }
+            .app-sidebar {
+                position: static;
+                height: auto;
+                flex-direction: row;
+                align-items: center;
+                overflow-x: auto;
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+            }
+            .side-link { flex: 0 0 auto; }
+            .side-footer { display: none; }
+            .app-main { padding-top: 8px; }
+        }
+
+        @media (max-width: 768px) {
+            .auth-shell { padding: 18px; }
+            .auth-panel { padding: 28px 20px; }
+            .topbar { flex-wrap: wrap; }
+            .topbar-search { order: 2; flex-basis: 100%; max-width: none; }
+            .app-main { padding: 14px; }
+            .workspace-card { padding: 14px; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: rgba(130, 138, 151, 0.22); border-radius: 999px; }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
-<body>
-
-<div class="sky-top-bar"></div>
-
-<nav class="navbar navbar-expand-lg navbar-sky fixed-top" style="top:3px;">
-    <div class="container-fluid px-4">
-        <a class="navbar-brand d-flex align-items-center gap-3" href="{% url 'messaging:inbox' %}">
-            <img src="{% static 'img/sky_logo.png' %}" alt="Sky" class="sky-logo">
-            <span class="nav-sub">Engineering Portal</span>
-        </a>
-        <div class="ms-auto d-flex align-items-center gap-3">
-            {% if user.is_authenticated %}
-            <a href="{% url 'messaging:inbox' %}" class="nav-link position-relative" title="Inbox">
-                <i class="bi bi-envelope" style="font-size:1.1rem;"></i>
-                {% with count=unread_count %}
-                {% if count %}<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="nav-unread-badge">{{ count }}</span>{% endif %}
-                {% endwith %}
-            </a>
-            <div class="dropdown">
-                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown">
-                    <div class="avatar" style="width:30px;height:30px;font-size:10px;">
-                        {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
-                    </div>
-                    <span style="font-size:13px;font-weight:500;color:var(--t0);">{{ user.get_full_name|default:user.username }}</span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
-                    <li><a class="dropdown-item" href="{% url 'accounts:change_password' %}"><i class="bi bi-key me-2"></i>Change Password</a></li>
-                    {% if user.is_staff %}
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="/admin/"><i class="bi bi-shield-lock me-2"></i>Admin Panel</a></li>
-                    {% endif %}
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <form method="post" action="{% url 'logout' %}">{% csrf_token %}
-                            <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</nav>
-
-<div style="padding-top:57px;display:flex;">
-
-{% if user.is_authenticated %}
-<nav id="sidebar">
-    <a href="{% url 'messaging:compose' %}" class="btn-compose">✏️ Compose</a>
-
-    <div class="sidebar-section">Messages</div>
-    <a href="{% url 'messaging:inbox' %}" class="nav-link {% if active_tab == 'inbox' %}active{% endif %}">
-        <i class="bi bi-inbox"></i> Inbox
-        {% if unread_count %}<span class="nav-badge">{{ unread_count }}</span>{% endif %}
-    </a>
-    <a href="{% url 'messaging:sent' %}" class="nav-link {% if active_tab == 'sent' %}active{% endif %}">
-        <i class="bi bi-send"></i> Sent
-    </a>
-    <a href="{% url 'messaging:drafts' %}" class="nav-link {% if active_tab == 'drafts' %}active{% endif %}">
-        <i class="bi bi-file-earmark-text"></i> Drafts
-    </a>
-
-    <div class="sidebar-section mt-2">Navigation</div>
-    <a href="#" class="nav-link"><i class="bi bi-people"></i> Teams</a>
-    <a href="#" class="nav-link"><i class="bi bi-diagram-3"></i> Organisation</a>
-    <a href="#" class="nav-link"><i class="bi bi-calendar3"></i> Calendar</a>
-    <a href="#" class="nav-link"><i class="bi bi-bar-chart"></i> Performance</a>
-
-    <div style="position:absolute;bottom:16px;left:12px;font-size:9px;color:var(--t2);">© Sky 2026</div>
-</nav>
-{% endif %}
-
-<main id="main-content" {% if not user.is_authenticated %}style="margin-left:0;"{% endif %}>
+<body class="{% block body_class %}{% endblock %}">
     {% if messages %}
     <div class="django-messages">
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -354,44 +636,114 @@
     </div>
     {% endif %}
 
-    {% block content %}{% endblock %}
-</main>
-</div>
+    <div class="app-shell">
+        <aside class="app-sidebar">
+            <div class="app-logo">
+                <a href="{% url 'messaging:inbox' %}"><img src="{% static 'img/sky_logo.png' %}" alt="Sky"></a>
+            </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    setTimeout(() => {
-        document.querySelectorAll('.django-messages .alert').forEach(el => {
-            new bootstrap.Alert(el).close();
-        });
-    }, 4000);
+            <nav class="nav-stack">
+                <a href="#" class="side-link"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+                <a href="#" class="side-link"><i class="bi bi-people"></i><span>Teams</span></a>
+                <a href="#" class="side-link"><i class="bi bi-building"></i><span>Organisation</span></a>
+                <a href="{% url 'messaging:inbox' %}" class="side-link {% if active_tab == 'inbox' or active_tab == 'sent' or active_tab == 'drafts' %}active{% endif %}"><i class="bi bi-chat"></i><span>Messages</span></a>
+                <a href="#" class="side-link"><i class="bi bi-calendar3"></i><span>Calendar</span></a>
+                <a href="#" class="side-link"><i class="bi bi-speedometer2"></i><span>Performance</span></a>
+            </nav>
 
-    {% if user.is_authenticated %}
-    function updateUnreadBadge() {
-        fetch("{% url 'messaging:unread_count_api' %}")
-            .then(r => r.json())
-            .then(data => {
-                const badge = document.getElementById('nav-unread-badge');
-                if (data.unread_count > 0) {
-                    if (badge) badge.textContent = data.unread_count;
-                    else {
-                        const icon = document.querySelector('a[title="Inbox"]');
-                        if (icon) {
-                            const b = document.createElement('span');
-                            b.id = 'nav-unread-badge';
-                            b.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
-                            b.textContent = data.unread_count;
-                            icon.appendChild(b);
-                        }
-                    }
-                } else {
-                    if (badge) badge.remove();
+            <div class="side-footer">© Sky 2026</div>
+        </aside>
+
+        <main class="app-main">
+            <header class="topbar">
+                <div class="topbar-search">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="Search teams, members or locations...">
+                </div>
+                <div class="topbar-actions">
+                    <button type="button" id="moon-shortcut" class="icon-btn" aria-label="Dark mode shortcut">
+                        <i class="bi bi-moon"></i>
+                    </button>
+                    <a href="{% url 'messaging:inbox' %}" class="icon-btn position-relative text-decoration-none" aria-label="Notifications">
+                        <i class="bi bi-bell"></i>
+                        {% if unread_count %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ unread_count }}</span>
+                        {% endif %}
+                    </a>
+                    <div class="dropdown">
+                        <a href="#" class="text-decoration-none d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="avatar-chip">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:change_password' %}"><i class="bi bi-key me-2"></i>Change password</a></li>
+                            {% if user.is_staff %}
+                            <li><a class="dropdown-item" href="/admin/"><i class="bi bi-shield-lock me-2"></i>Admin panel</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+                                    <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            const root = document.documentElement;
+            const mainToggle = document.getElementById('theme-toggle');
+            const moonShortcut = document.getElementById('moon-shortcut');
+            const mainIcon = document.getElementById('theme-toggle-icon');
+
+            function applyTheme(theme) {
+                root.setAttribute('data-theme', theme);
+                localStorage.setItem('sky-theme', theme);
+                if (mainIcon) {
+                    mainIcon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
                 }
-            }).catch(() => {});
-    }
-    setInterval(updateUnreadBadge, 30000);
-    {% endif %}
-</script>
-{% block extra_js %}{% endblock %}
+                const shortcutIcon = moonShortcut ? moonShortcut.querySelector('i') : null;
+                if (shortcutIcon) {
+                    shortcutIcon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
+                }
+            }
+
+            const current = root.getAttribute('data-theme') || 'light';
+            applyTheme(current);
+
+            function toggleTheme() {
+                applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+            }
+
+            if (mainToggle) mainToggle.addEventListener('click', toggleTheme);
+            if (moonShortcut) moonShortcut.addEventListener('click', toggleTheme);
+
+            document.querySelectorAll('.toggle-password').forEach(function(button) {
+                button.addEventListener('click', function () {
+                    const input = document.getElementById(this.dataset.target);
+                    if (!input) return;
+                    const show = input.type === 'password';
+                    input.type = show ? 'text' : 'password';
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        icon.className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+                    }
+                });
+            });
+
+            setTimeout(function () {
+                document.querySelectorAll('.django-messages .alert').forEach(function (el) {
+                    try { new bootstrap.Alert(el).close(); } catch (e) {}
+                });
+            }, 4000);
+        })();
+    </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -7,7 +7,7 @@ class MessageAdmin(admin.ModelAdmin):
     list_display = ['subject', 'sender', 'status', 'sent_at', 'created_at']
     list_filter = ['status', 'sent_at']
     search_fields = ['subject', 'sender__username', 'body']
-    filter_horizontal = ['recipients']
+    # filter_horizontal = ['recipients']  # Cannot use with through model
     readonly_fields = ['created_at', 'updated_at', 'sent_at']
 
 

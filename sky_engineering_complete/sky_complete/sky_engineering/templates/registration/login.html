@@ -1,51 +1,52 @@
+{% extends "base/auth_base.html" %}
 {% load static %}
-{% extends "base/base.html" %}
 {% block title %}Sign In – Sky Engineering Portal{% endblock %}
-
-{% block extra_css %}
-<style>
-    #main-content { margin-left: 0 !important; display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 62px); padding: 24px; }
-    .login-wrap { width: 100%; max-width: 400px; }
-    .login-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="login-wrap">
-    <div class="text-center mb-8" style="margin-bottom:32px;">
-        <img src="{% static 'img/sky_logo.png' %}" alt="Sky" style="height:40px; margin-bottom:20px; display:block; margin-left:auto; margin-right:auto;">
-        <h4 class="fw-bold mb-1" style="font-size:1.3rem; letter-spacing:-0.3px;">Welcome back</h4>
-        <p style="color:var(--text-muted); font-size:0.85rem; margin:0;">Sign in to Sky Engineering Portal</p>
-    </div>
+<div class="auth-shell">
+    <div class="auth-frame">
+        <div class="auth-visual"></div>
+        <div class="auth-panel">
+            <button type="button" id="theme-toggle" class="auth-theme-toggle" aria-label="Toggle light and dark mode"><i id="theme-toggle-icon" class="bi bi-moon"></i><span>Theme</span></button>
+            <div class="auth-card">
+                <div class="auth-logo"><img src="{% static 'img/sky_logo.png' %}" alt="Sky"></div>
+                <div class="auth-title">Welcome back</div>
+                <div class="auth-subtitle">Sign in to continue to the Sky Engineering messaging portal.</div>
 
-    <div class="login-card">
-        <form method="post">
-            {% csrf_token %}
-            {% if form.errors %}
-            <div class="alert alert-danger py-2 small mb-4" style="border-left:3px solid #ef4444;">
-                <i class="bi bi-exclamation-circle me-2"></i>Invalid username or password.
-            </div>
-            {% endif %}
-            <div class="mb-3">
-                <label class="form-label">Username</label>
-                <input type="text" name="username" class="form-control" autofocus required placeholder="Enter your username">
-            </div>
-            <div class="mb-4">
-                <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" required placeholder="••••••••">
-            </div>
-            <input type="hidden" name="next" value="{{ next }}">
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary fw-semibold py-2">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
-                </button>
-            </div>
-        </form>
-    </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                    <div class="alert alert-danger py-3 mb-4">
+                        <i class="bi bi-exclamation-circle me-2"></i>Invalid username or password. Please try again.
+                    </div>
+                    {% endif %}
 
-    <div class="text-center mt-4">
-        <span style="color:var(--text-muted); font-size:0.84rem;">Don't have an account?</span>
-        <a href="{% url 'accounts:register' %}" class="ms-1 fw-semibold" style="font-size:0.84rem; background:var(--sky-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Register here</a>
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" placeholder="Enter your username" autofocus required>
+                    </div>
+
+                    <div class="mb-2 password-field">
+                        <label class="form-label">Password</label>
+                        <div class="password-input-wrap">
+                            <input type="password" id="login-password" name="password" class="form-control" placeholder="Enter your password" required>
+                            <button type="button" class="toggle-password" data-target="login-password" aria-label="Show password"><i class="bi bi-eye"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="auth-helper">Use your portal credentials to access messages, teams and organisational updates.</div>
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary">Sign In</button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4 text-muted">
+                    Do not have an account?
+                    <a href="{% url 'accounts:register' %}" class="text-decoration-none fw-semibold" style="background:var(--sky-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Create one</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,90 +1,140 @@
 {% extends "base/base.html" %}
-{% block title %}Inbox – Sky Engineering Portal{% endblock %}
-
+{% block title %}Messages – Sky Engineering Portal{% endblock %}
 {% block extra_css %}
 <style>
-.msg-subnav{display:flex;gap:4px;margin-bottom:16px;}
-.msn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;color:var(--t1);cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;transition:background .1s;}
-.msn:hover{background:var(--sky-light);}
-.msn.active{background:var(--purple-light);color:var(--purple);font-weight:600;}
-.msn-badge{background:var(--sky-gradient-135);color:#fff;font-size:9px;padding:1px 6px;border-radius:10px;font-weight:700;}
-.unread-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--purple);margin-right:7px;vertical-align:middle;flex-shrink:0;}
+    .message-app { display:grid; grid-template-columns: 290px minmax(0,1fr); gap:18px; min-height: calc(100vh - 180px); }
+    .thread-panel, .chat-panel { border:1px solid var(--line); border-radius:24px; background:var(--surface); overflow:hidden; }
+    .thread-header, .chat-header, .composer-bar { padding:16px 18px; border-bottom:1px solid var(--line); }
+    .thread-header h3, .chat-header h3 { margin:0; font-size:1.4rem; font-weight:700; }
+    .thread-search { padding: 0 18px 16px; border-bottom:1px solid var(--line); }
+    .thread-list { padding:10px; display:flex; flex-direction:column; gap:6px; max-height: calc(100vh - 300px); overflow:auto; }
+    .thread-item { display:grid; grid-template-columns:44px minmax(0,1fr); gap:12px; padding:12px; border-radius:18px; text-decoration:none; color:inherit; }
+    .thread-item:hover { background:var(--hover); }
+    .thread-item.active { background:var(--surface-muted); }
+    .thread-item .avatar-chip { width:44px; height:44px; font-size:0.95rem; }
+    .thread-name { font-weight:700; font-size:0.95rem; display:flex; align-items:center; gap:8px; }
+    .thread-preview, .thread-time { color:var(--text-muted); font-size:0.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .thread-preview { white-space:normal; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; }
+    .unread-dot { width:7px; height:7px; border-radius:50%; background:#ef2d7d; display:inline-block; }
+    .chat-header { display:flex; justify-content:space-between; align-items:center; gap:14px; }
+    .chat-user { display:flex; align-items:center; gap:12px; }
+    .chat-user .avatar-chip { width:42px; height:42px; font-size:0.95rem; }
+    .chat-actions { display:flex; align-items:center; gap:8px; }
+    .chat-actions .icon-btn { width:34px; height:34px; }
+    .chat-search { width:210px; position:relative; }
+    .chat-search i { position:absolute; top:50%; left:12px; transform:translateY(-50%); color:var(--text-muted); }
+    .chat-search input { width:100%; border:1px solid var(--line); background:var(--surface-muted); color:var(--text); border-radius:999px; padding:9px 12px 9px 34px; font-size:0.84rem; }
+    .chat-body { padding:18px; display:flex; flex-direction:column; gap:12px; min-height: 520px; background:var(--surface); }
+    .bubble-row { display:flex; }
+    .bubble-row.self { justify-content:flex-end; }
+    .bubble { max-width: 62%; padding:12px 15px; border-radius:18px; font-size:0.92rem; line-height:1.6; box-shadow: var(--shadow-soft); }
+    .bubble.other { background:var(--message-other); border-top-left-radius:8px; }
+    .bubble.self { background:var(--message-self); border-top-right-radius:8px; }
+    .bubble-meta { display:block; margin-top:6px; color:var(--text-muted); font-size:0.74rem; }
+    .composer-bar { border-top:1px solid var(--line); border-bottom:0; }
+    .composer-shell { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; }
+    .composer-input { background:var(--surface-muted); border:1px solid var(--line); border-radius:18px; min-height:54px; padding:14px 16px; color:var(--text-muted); }
+    .composer-actions { display:flex; align-items:center; gap:8px; }
+    .empty-state { display:flex; min-height:520px; align-items:center; justify-content:center; text-align:center; color:var(--text-muted); padding:32px; }
+    @media (max-width: 1100px) { .message-app { grid-template-columns: 1fr; } }
 </style>
 {% endblock %}
-
 {% block content %}
-<div class="page-header d-flex justify-content-between align-items-center">
-    <h2>
-        📥 Inbox
-        {% if unread_count %}
-        <span class="badge-gradient ms-2">{{ unread_count }} unread</span>
-        {% endif %}
-    </h2>
-    <a href="{% url 'messaging:compose' %}" class="btn-sky btn btn-sm">
-        ✏️ New Message
-    </a>
-</div>
-
-<div class="msg-subnav">
-    <a href="{% url 'messaging:inbox' %}" class="msn active">📥 Inbox {% if unread_count %}<span class="msn-badge">{{ unread_count }}</span>{% endif %}</a>
-    <a href="{% url 'messaging:sent' %}" class="msn">📤 Sent</a>
-    <a href="{% url 'messaging:drafts' %}" class="msn">📄 Drafts</a>
-</div>
-
-<div class="card">
-    <div class="card-body p-0">
-        {% if user_statuses %}
-        <div class="table-responsive">
-            <table class="table mb-0">
-                <thead>
-                    <tr>
-                        <th style="width:36px;"></th>
-                        <th>From</th>
-                        <th>Subject</th>
-                        <th style="width:155px;">Received</th>
-                        <th style="width:90px;"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for status in user_statuses %}
-                    <tr class="msg-row {% if not status.is_read %}unread{% endif %}"
-                        onclick="window.location='{% url 'messaging:view_message' status.message.id %}'">
-                        <td class="text-center align-middle">
-                            <div class="avatar" style="margin:0 auto;">
-                                {% if status.message.sender %}{{ status.message.sender.first_name|slice:":1"|upper }}{{ status.message.sender.last_name|slice:":1"|upper }}{% else %}?{% endif %}
-                            </div>
-                        </td>
-                        <td class="align-middle">
-                            {% if not status.is_read %}<span class="unread-dot"></span>{% endif %}
-                            <span style="{% if not status.is_read %}font-weight:600;{% endif %}">
-                                {{ status.message.sender.get_full_name|default:status.message.sender.username }}
-                            </span>
-                        </td>
-                        <td class="align-middle">
-                            <span style="{% if not status.is_read %}font-weight:600;{% endif %}">{{ status.message.subject }}</span>
-                            <span style="color:var(--t2);font-size:11px;" class="ms-2 d-none d-md-inline">{{ status.message.body|truncatechars:50 }}</span>
-                        </td>
-                        <td class="align-middle" style="color:var(--t2);font-size:11px;">{{ status.message.sent_at|date:"d M Y H:i" }}</td>
-                        <td class="align-middle text-end" onclick="event.stopPropagation();">
-                            <a href="{% url 'messaging:toggle_read' status.message.id %}" class="btn btn-sm btn-light" title="{% if status.is_read %}Mark unread{% else %}Mark read{% endif %}">
-                                <i class="bi bi-{% if status.is_read %}envelope{% else %}envelope-open{% endif %}"></i>
-                            </a>
-                            <a href="{% url 'messaging:delete_message' status.message.id %}" class="btn btn-sm btn-light text-danger" title="Delete" onclick="return confirm('Remove this message?')">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="workspace-card">
+    <div class="page-heading mb-3">
+        <div>
+            <div class="eyebrow">Internal communications</div>
+            <h2>Messages</h2>
         </div>
-        {% else %}
-        <div class="text-center py-5" style="color:var(--t2);">
-            <div style="font-size:3rem;opacity:.2;margin-bottom:12px;">📥</div>
-            <p class="mb-3">Your inbox is empty.</p>
-            <a href="{% url 'messaging:compose' %}" class="btn-sky btn btn-sm">Send a message</a>
-        </div>
-        {% endif %}
+        <a href="{% url 'messaging:compose' %}" class="btn btn-primary">New Message</a>
+    </div>
+
+    <div class="pill-tabs">
+        <a href="{% url 'messaging:inbox' %}" class="pill-tab active">Inbox{% if unread_count %} ({{ unread_count }}){% endif %}</a>
+        <a href="{% url 'messaging:sent' %}" class="pill-tab">Sent</a>
+        <a href="{% url 'messaging:drafts' %}" class="pill-tab">Drafts</a>
+    </div>
+
+    <div class="message-app">
+        <aside class="thread-panel">
+            <div class="thread-header d-flex justify-content-between align-items-center">
+                <h3>Messages</h3>
+                <i class="bi bi-filter"></i>
+            </div>
+            <div class="thread-search"><input class="form-control" placeholder="Search chats..."></div>
+            <div class="thread-list">
+                {% for status in user_statuses %}
+                <a href="{% url 'messaging:view_message' status.message.id %}" class="thread-item {% if selected_status and selected_status.message.id == status.message.id %}active{% endif %}">
+                    <span class="avatar-chip">{% if status.message.sender %}{{ status.message.sender.first_name|slice:":1"|upper }}{{ status.message.sender.last_name|slice:":1"|upper }}{% else %}?{% endif %}</span>
+                    <span class="min-w-0">
+                        <span class="thread-name">{% if not status.is_read %}<span class="unread-dot"></span>{% endif %}{{ status.message.sender.get_full_name|default:status.message.sender.username }}</span>
+                        <span class="thread-preview">{{ status.message.subject|default:"No subject" }} · {{ status.message.body|truncatechars:54 }}</span>
+                        <span class="thread-time">{{ status.message.sent_at|date:"g:i A" }}</span>
+                    </span>
+                </a>
+                {% empty %}
+                <div class="empty-state" style="min-height:240px;">Your inbox is empty.</div>
+                {% endfor %}
+            </div>
+        </aside>
+
+        <section class="chat-panel">
+            {% if selected_status %}
+            <div class="chat-header">
+                <div class="chat-user">
+                    <span class="avatar-chip">{% if selected_status.message.sender %}{{ selected_status.message.sender.first_name|slice:":1"|upper }}{{ selected_status.message.sender.last_name|slice:":1"|upper }}{% else %}?{% endif %}</span>
+                    <div>
+                        <div class="fw-bold">{{ selected_status.message.sender.get_full_name|default:selected_status.message.sender.username }}</div>
+                        <div class="text-muted small">{{ selected_status.message.subject|default:"No subject" }}</div>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button type="button" class="icon-btn"><i class="bi bi-telephone"></i></button>
+                    <button type="button" class="icon-btn"><i class="bi bi-camera-video"></i></button>
+                    <button type="button" class="icon-btn"><i class="bi bi-search"></i></button>
+                    <div class="chat-search">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Search in chat...">
+                    </div>
+                </div>
+            </div>
+            <div class="chat-body">
+                <div class="bubble-row">
+                    <div class="bubble other">
+                        {{ selected_status.message.body|linebreaksbr }}
+                        <span class="bubble-meta">{{ selected_status.message.sent_at|date:"g:i A" }}</span>
+                    </div>
+                </div>
+                {% if selected_status.message.subject %}
+                <div class="bubble-row self">
+                    <div class="bubble self">
+                        Subject: {{ selected_status.message.subject }}
+                        <span class="bubble-meta">Preview panel</span>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="mt-auto"></div>
+            </div>
+            <div class="composer-bar">
+                <div class="composer-shell">
+                    <div class="composer-input">Send a message...</div>
+                    <div class="composer-actions">
+                        <button type="button" class="icon-btn"><i class="bi bi-paperclip"></i></button>
+                        <button type="button" class="icon-btn"><i class="bi bi-image"></i></button>
+                        <a href="{% url 'messaging:compose' %}" class="icon-btn text-decoration-none"><i class="bi bi-send"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div>
+                    <div style="font-size:3rem; opacity:.35;" class="mb-3"><i class="bi bi-chat-left-text"></i></div>
+                    <div class="fw-semibold text-dark mb-2">No messages yet</div>
+                    <div>Select a conversation or create a new message.</div>
+                </div>
+            </div>
+            {% endif %}
+        </section>
     </div>
 </div>
 {% endblock %}
