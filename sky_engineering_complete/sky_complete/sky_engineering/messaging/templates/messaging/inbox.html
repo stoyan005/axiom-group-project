@@ -1,0 +1,90 @@
+{% extends "base/base.html" %}
+{% block title %}Inbox – Sky Engineering Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+.msg-subnav{display:flex;gap:4px;margin-bottom:16px;}
+.msn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;color:var(--t1);cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;transition:background .1s;}
+.msn:hover{background:var(--sky-light);}
+.msn.active{background:var(--purple-light);color:var(--purple);font-weight:600;}
+.msn-badge{background:var(--sky-gradient-135);color:#fff;font-size:9px;padding:1px 6px;border-radius:10px;font-weight:700;}
+.unread-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--purple);margin-right:7px;vertical-align:middle;flex-shrink:0;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <h2>
+        📥 Inbox
+        {% if unread_count %}
+        <span class="badge-gradient ms-2">{{ unread_count }} unread</span>
+        {% endif %}
+    </h2>
+    <a href="{% url 'messaging:compose' %}" class="btn-sky btn btn-sm">
+        ✏️ New Message
+    </a>
+</div>
+
+<div class="msg-subnav">
+    <a href="{% url 'messaging:inbox' %}" class="msn active">📥 Inbox {% if unread_count %}<span class="msn-badge">{{ unread_count }}</span>{% endif %}</a>
+    <a href="{% url 'messaging:sent' %}" class="msn">📤 Sent</a>
+    <a href="{% url 'messaging:drafts' %}" class="msn">📄 Drafts</a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        {% if user_statuses %}
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:36px;"></th>
+                        <th>From</th>
+                        <th>Subject</th>
+                        <th style="width:155px;">Received</th>
+                        <th style="width:90px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for status in user_statuses %}
+                    <tr class="msg-row {% if not status.is_read %}unread{% endif %}"
+                        onclick="window.location='{% url 'messaging:view_message' status.message.id %}'">
+                        <td class="text-center align-middle">
+                            <div class="avatar" style="margin:0 auto;">
+                                {% if status.message.sender %}{{ status.message.sender.first_name|slice:":1"|upper }}{{ status.message.sender.last_name|slice:":1"|upper }}{% else %}?{% endif %}
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            {% if not status.is_read %}<span class="unread-dot"></span>{% endif %}
+                            <span style="{% if not status.is_read %}font-weight:600;{% endif %}">
+                                {{ status.message.sender.get_full_name|default:status.message.sender.username }}
+                            </span>
+                        </td>
+                        <td class="align-middle">
+                            <span style="{% if not status.is_read %}font-weight:600;{% endif %}">{{ status.message.subject }}</span>
+                            <span style="color:var(--t2);font-size:11px;" class="ms-2 d-none d-md-inline">{{ status.message.body|truncatechars:50 }}</span>
+                        </td>
+                        <td class="align-middle" style="color:var(--t2);font-size:11px;">{{ status.message.sent_at|date:"d M Y H:i" }}</td>
+                        <td class="align-middle text-end" onclick="event.stopPropagation();">
+                            <a href="{% url 'messaging:toggle_read' status.message.id %}" class="btn btn-sm btn-light" title="{% if status.is_read %}Mark unread{% else %}Mark read{% endif %}">
+                                <i class="bi bi-{% if status.is_read %}envelope{% else %}envelope-open{% endif %}"></i>
+                            </a>
+                            <a href="{% url 'messaging:delete_message' status.message.id %}" class="btn btn-sm btn-light text-danger" title="Delete" onclick="return confirm('Remove this message?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5" style="color:var(--t2);">
+            <div style="font-size:3rem;opacity:.2;margin-bottom:12px;">📥</div>
+            <p class="mb-3">Your inbox is empty.</p>
+            <a href="{% url 'messaging:compose' %}" class="btn-sky btn btn-sm">Send a message</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base/base.html" %}
+{% block title %}Sent – Sky Engineering Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+.msg-subnav{display:flex;gap:4px;margin-bottom:16px;}
+.msn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;color:var(--t1);cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;transition:background .1s;}
+.msn:hover{background:var(--sky-light);}
+.msn.active{background:var(--purple-light);color:var(--purple);font-weight:600;}
+.msn-badge{background:var(--sky-gradient-135);color:#fff;font-size:9px;padding:1px 6px;border-radius:10px;font-weight:700;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <h2>📤 Sent</h2>
+    <a href="{% url 'messaging:compose' %}" class="btn-sky btn btn-sm">✏️ New Message</a>
+</div>
+
+<div class="msg-subnav">
+    <a href="{% url 'messaging:inbox' %}" class="msn">📥 Inbox {% if unread_count %}<span class="msn-badge">{{ unread_count }}</span>{% endif %}</a>
+    <a href="{% url 'messaging:sent' %}" class="msn active">📤 Sent</a>
+    <a href="{% url 'messaging:drafts' %}" class="msn">📄 Drafts</a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        {% if sent_messages %}
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>To</th>
+                        <th>Subject</th>
+                        <th style="width:155px;">Sent</th>
+                        <th style="width:60px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for msg in sent_messages %}
+                    <tr class="msg-row" onclick="window.location='{% url 'messaging:view_message' msg.id %}'">
+                        <td class="align-middle" style="color:var(--t1);font-size:12px;">{{ msg.get_recipients_display }}</td>
+                        <td class="align-middle" style="font-weight:500;">{{ msg.subject }}</td>
+                        <td class="align-middle" style="color:var(--t2);font-size:11px;">{{ msg.sent_at|date:"d M Y H:i" }}</td>
+                        <td class="align-middle text-end" onclick="event.stopPropagation();">
+                            <a href="{% url 'messaging:delete_message' msg.id %}" class="btn btn-sm btn-light text-danger" onclick="return confirm('Remove from sent?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5" style="color:var(--t2);">
+            <div style="font-size:3rem;opacity:.2;margin-bottom:12px;">📤</div>
+            <p class="mb-0">No sent messages.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% load static %}
+{% extends "base/base.html" %}
+{% block title %}Register – Sky Engineering Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+    #main-content { margin-left: 0 !important; display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 62px); padding: 24px; }
+    .register-wrap { width: 100%; max-width: 480px; }
+    .register-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 36px 40px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-wrap">
+    <div class="text-center mb-8" style="margin-bottom:28px;">
+        <img src="{% static 'img/sky_logo.png' %}" alt="Sky" style="height:36px; margin-bottom:18px; display:block; margin-left:auto; margin-right:auto;">
+        <h4 class="fw-bold mb-1" style="font-size:1.25rem; letter-spacing:-0.3px;">Create an account</h4>
+        <p style="color:var(--text-muted); font-size:0.84rem; margin:0;">Sky Engineering Portal – internal registration</p>
+    </div>
+
+    <div class="register-card">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-6">
+                    <label class="form-label">First Name</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}<div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-6">
+                    <label class="form-label">Last Name</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}<div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}<div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Email Address</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Password</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}<div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Confirm Password</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}<div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary fw-semibold py-2">
+                    <i class="bi bi-person-check me-2"></i>Create Account
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'login' %}" style="color:var(--text-muted); font-size:0.84rem;">Already have an account?
+            <span style="background:var(--sky-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-weight:600;">Sign in</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

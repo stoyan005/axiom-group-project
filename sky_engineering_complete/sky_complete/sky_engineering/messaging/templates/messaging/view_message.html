@@ -1,0 +1,51 @@
+{% extends "base/base.html" %}
+{% block title %}{{ message.subject }} – Sky Engineering Portal{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <h2 class="text-truncate" style="max-width:70%;">{{ message.subject|default:"(no subject)" }}</h2>
+    <div class="d-flex gap-2">
+        <a href="{% url 'messaging:delete_message' message.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Remove this message?')">
+            <i class="bi bi-trash me-1"></i>Delete
+        </a>
+        {% if is_recipient %}
+        <a href="{% url 'messaging:inbox' %}" class="btn btn-light btn-sm">← Back to Inbox</a>
+        {% else %}
+        <a href="{% url 'messaging:sent' %}" class="btn btn-light btn-sm">← Back to Sent</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex align-items-start gap-3">
+            <div class="avatar" style="width:44px;height:44px;font-size:1rem;flex-shrink:0;">
+                {% if message.sender %}{{ message.sender.first_name|slice:":1"|upper }}{{ message.sender.last_name|slice:":1"|upper }}{% else %}?{% endif %}
+            </div>
+            <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>{{ message.sender.get_full_name|default:message.sender.username }}</strong>
+                        <span style="color:var(--t2);font-size:11px;" class="ms-2">&lt;{{ message.sender.email }}&gt;</span>
+                    </div>
+                    <span style="color:var(--t2);font-size:11px;white-space:nowrap;">{{ message.sent_at|date:"d M Y, H:i" }}</span>
+                </div>
+                <div style="color:var(--t2);font-size:11px;margin-top:3px;">
+                    <strong style="color:var(--t1);">To:</strong> {{ message.get_recipients_display }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div style="white-space:pre-wrap;line-height:1.8;font-size:0.93rem;">{{ message.body }}</div>
+    </div>
+    {% if is_recipient %}
+    <div class="card-footer d-flex gap-2">
+        <a href="{% url 'messaging:compose' %}" class="btn-sky btn btn-sm">↩ Reply</a>
+        <a href="{% url 'messaging:toggle_read' message.id %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-envelope me-1"></i>Mark as Unread
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+# Sky Engineering Portal – Messaging Module
+## 5COSC021W Coursework | Group Axiom | Student: Harris Bourou (w2046023)
+
+### Stack
+- Python 3.10+
+- Django 4.2
+- SQLite (db.sqlite3 — auto-created on first migrate)
+- Bootstrap 5.3 + Bootstrap Icons (CDN)
+- DM Sans font (Google Fonts CDN)
+
+### Quick Start
+
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Create database and run migrations
+python manage.py migrate
+
+# 3. (Optional) Create a superuser for admin panel
+python manage.py createsuperuser
+
+# 4. Run the development server
+python manage.py runserver
+```
+
+Then open http://127.0.0.1:8000 in your browser.
+
+### URL Structure
+| URL | View |
+|-----|------|
+| / | Redirects to /messaging/inbox/ |
+| /accounts/login/ | Login |
+| /accounts/register/ | Self-registration |
+| /accounts/profile/ | User profile |
+| /accounts/change-password/ | Change password |
+| /messaging/inbox/ | Inbox |
+| /messaging/sent/ | Sent messages |
+| /messaging/drafts/ | Drafts |
+| /messaging/compose/ | New message |
+| /messaging/view/<id>/ | View a message |
+| /messaging/draft/<id>/ | Edit a draft |
+| /messaging/delete/<id>/ | Delete a message |
+| /messaging/toggle/<id>/ | Toggle read/unread |
+| /messaging/api/unread-count/ | JSON unread badge API |
+| /admin/ | Django admin panel |
+
+### Apps
+- **accounts** — User registration, login, profile, password change
+- **messaging** — Inbox, sent, drafts, compose, view, delete, read-status

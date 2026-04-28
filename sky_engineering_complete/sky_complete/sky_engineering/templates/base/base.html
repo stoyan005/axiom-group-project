@@ -1,0 +1,397 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sky Engineering Portal{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+    <style>
+        /* ── Sky 2025 Brand Variables ── */
+        :root {
+            --sky-orange:  #FF5500;
+            --sky-red:     #FF1060;
+            --sky-pink:    #FF0090;
+            --sky-purple:  #CC00DD;
+            --sky-violet:  #8800FF;
+            --sky-blue:    #3355FF;
+            --sky-gradient: linear-gradient(90deg,#FF5500 0%,#FF1060 25%,#CC00DD 58%,#3355FF 100%);
+            --sky-gradient-135: linear-gradient(135deg,#FF5500 0%,#FF1060 25%,#CC00DD 58%,#3355FF 100%);
+
+            /* Light theme (matching hi-fi) */
+            --bg: #F5F5F7;
+            --white: #FFFFFF;
+            --border: #E5E5EA;
+            --t0: #111111;
+            --t1: #555555;
+            --t2: #999999;
+            --purple: #8B2FC9;
+            --purple-light: #F3EEFB;
+            --sky-light: #F0EAFC;
+            --sidebar-width: 200px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--t0);
+            min-height: 100vh;
+            font-size: 0.9rem;
+        }
+
+        /* ── Gradient accent line ── */
+        .sky-top-bar {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 3px; background: var(--sky-gradient); z-index: 9999;
+        }
+
+        /* ── Navbar ── */
+        .navbar-sky {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            height: 54px;
+        }
+        .sky-logo {
+            height: 26px; width: auto;
+        }
+        .nav-sub {
+            font-size: 9px; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--t2); font-weight: 400;
+        }
+        .navbar-sky .nav-link { color: var(--t1) !important; }
+        .navbar-sky .nav-link:hover { color: var(--t0) !important; }
+
+        /* ── Sidebar ── */
+        #sidebar {
+            width: var(--sidebar-width);
+            min-height: calc(100vh - 57px);
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            position: fixed; top: 57px; left: 0;
+            overflow-y: auto; z-index: 100;
+            padding: 10px 6px 24px;
+        }
+        #sidebar .nav-link {
+            color: var(--t1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 1px 0;
+            display: flex; align-items: center; gap: 9px;
+            font-size: 12px; font-weight: 500;
+            transition: background .1s, color .1s;
+        }
+        #sidebar .nav-link:hover { background: var(--bg); color: var(--t0); }
+        #sidebar .nav-link.active {
+            background: var(--purple-light);
+            color: var(--purple);
+            font-weight: 600;
+        }
+        .sidebar-section {
+            padding: 14px 12px 4px;
+            font-size: 9px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1.8px;
+            color: var(--t2);
+        }
+        .badge-gradient {
+            background: var(--sky-gradient-135);
+            color: #fff; font-size: 9px;
+            padding: 2px 7px; border-radius: 10px; font-weight: 700;
+        }
+        .nav-badge {
+            margin-left: auto;
+            background: var(--sky-gradient-135);
+            color: #fff; font-size: 9px;
+            padding: 1px 5px; border-radius: 10px; font-weight: 700;
+        }
+
+        /* ── Compose button ── */
+        .btn-compose {
+            display: block; width: calc(100% - 0px);
+            background: var(--sky-gradient-135);
+            color: #fff !important; border: none;
+            border-radius: 9px; padding: 10px 12px;
+            font-size: 12px; font-weight: 700;
+            text-align: center; text-decoration: none;
+            margin: 4px 0 8px; transition: opacity .2s;
+        }
+        .btn-compose:hover { opacity: .88; }
+
+        /* ── Main Content ── */
+        #main-content {
+            margin-left: var(--sidebar-width);
+            padding: 28px 32px;
+            min-height: calc(100vh - 57px);
+        }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .card-header {
+            background: transparent;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600; padding: 14px 20px;
+        }
+        .card-footer {
+            background: #FAFAFA;
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+        }
+
+        /* ── Page header ── */
+        .page-header {
+            margin-bottom: 20px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .page-header h2 {
+            font-size: 1.4rem; font-weight: 700;
+            margin: 0; letter-spacing: -.3px; color: var(--t0);
+        }
+
+        /* ── Tables ── */
+        .table { color: var(--t0); margin: 0; }
+        .table thead th {
+            background: #FAFAFA;
+            border-bottom: 1px solid var(--border);
+            color: var(--t2); font-size: 9px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            padding: 10px 14px;
+        }
+        .table tbody td {
+            border-bottom: 1px solid var(--border);
+            padding: 12px 14px; vertical-align: middle;
+        }
+        .table tbody tr:last-child td { border-bottom: none; }
+        .msg-row { cursor: pointer; transition: background .1s; }
+        .msg-row:hover { background: #FAFAFA !important; }
+        .msg-row.unread { background: #FEFAFF; }
+
+        /* ── Avatar ── */
+        .avatar {
+            width: 32px; height: 32px;
+            background: var(--sky-gradient-135);
+            color: #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 700; flex-shrink: 0;
+        }
+
+        /* ── Sky button ── */
+        .btn-sky {
+            background: var(--sky-gradient-135) !important;
+            border: none !important; color: #fff !important;
+            font-weight: 600 !important; border-radius: 8px !important;
+            transition: opacity .2s !important;
+        }
+        .btn-sky:hover { opacity: .88 !important; color: #fff !important; }
+
+        /* ── Secondary buttons ── */
+        .btn-outline-secondary {
+            border-color: var(--border) !important;
+            color: var(--t1) !important; border-radius: 8px !important;
+        }
+        .btn-outline-secondary:hover {
+            background: var(--bg) !important; color: var(--t0) !important;
+        }
+        .btn-outline-danger {
+            border-color: rgba(220,53,69,.4) !important;
+            color: #dc3545 !important; border-radius: 8px !important;
+        }
+        .btn-outline-danger:hover { background: rgba(220,53,69,.06) !important; }
+        .btn-light {
+            background: var(--bg) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--t1) !important; border-radius: 8px !important;
+        }
+        .btn-light:hover { background: #eaeaec !important; color: var(--t0) !important; }
+        .btn-light.text-danger { color: #dc3545 !important; }
+
+        /* ── Forms ── */
+        .form-control, .form-select {
+            border: 1px solid var(--border) !important;
+            border-radius: 8px !important;
+            padding: 9px 13px !important;
+            color: var(--t0) !important;
+            background: var(--white) !important;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--purple) !important;
+            box-shadow: 0 0 0 3px rgba(139,47,201,.1) !important;
+        }
+        .form-label {
+            font-size: 10px; font-weight: 700; color: var(--t1);
+            text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px;
+        }
+        .form-text { color: var(--t2) !important; font-size: 11px; }
+        select[multiple].form-control, select[multiple].form-select {
+            height: 160px !important;
+        }
+
+        /* ── Dropdown ── */
+        .dropdown-menu {
+            border: 1px solid var(--border) !important;
+            border-radius: 10px !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
+            padding: 6px !important;
+        }
+        .dropdown-item {
+            border-radius: 7px !important; font-size: 13px !important;
+            padding: 8px 12px !important; color: var(--t1) !important;
+        }
+        .dropdown-item:hover { background: var(--bg) !important; color: var(--t0) !important; }
+        .dropdown-item.text-danger { color: #dc3545 !important; }
+        .dropdown-divider { border-color: var(--border) !important; margin: 4px 0 !important; }
+
+        /* ── Flash messages ── */
+        .django-messages {
+            position: fixed; top: 66px; right: 16px;
+            z-index: 9999; min-width: 300px;
+        }
+        .alert { border-radius: 10px !important; }
+        .alert-success { border-left: 3px solid #22c55e !important; }
+        .alert-danger  { border-left: 3px solid #ef4444 !important; }
+        .alert-info    { border-left: 3px solid var(--sky-blue) !important; }
+
+        /* ── Misc ── */
+        .text-muted { color: var(--t2) !important; }
+        hr { border-color: var(--border) !important; }
+        .badge.rounded-pill { font-size: .6rem !important; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); border-radius: 3px; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="sky-top-bar"></div>
+
+<nav class="navbar navbar-expand-lg navbar-sky fixed-top" style="top:3px;">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand d-flex align-items-center gap-3" href="{% url 'messaging:inbox' %}">
+            <img src="{% static 'img/sky_logo.png' %}" alt="Sky" class="sky-logo">
+            <span class="nav-sub">Engineering Portal</span>
+        </a>
+        <div class="ms-auto d-flex align-items-center gap-3">
+            {% if user.is_authenticated %}
+            <a href="{% url 'messaging:inbox' %}" class="nav-link position-relative" title="Inbox">
+                <i class="bi bi-envelope" style="font-size:1.1rem;"></i>
+                {% with count=unread_count %}
+                {% if count %}<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="nav-unread-badge">{{ count }}</span>{% endif %}
+                {% endwith %}
+            </a>
+            <div class="dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown">
+                    <div class="avatar" style="width:30px;height:30px;font-size:10px;">
+                        {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+                    </div>
+                    <span style="font-size:13px;font-weight:500;color:var(--t0);">{{ user.get_full_name|default:user.username }}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'accounts:change_password' %}"><i class="bi bi-key me-2"></i>Change Password</a></li>
+                    {% if user.is_staff %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/admin/"><i class="bi bi-shield-lock me-2"></i>Admin Panel</a></li>
+                    {% endif %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+                            <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<div style="padding-top:57px;display:flex;">
+
+{% if user.is_authenticated %}
+<nav id="sidebar">
+    <a href="{% url 'messaging:compose' %}" class="btn-compose">✏️ Compose</a>
+
+    <div class="sidebar-section">Messages</div>
+    <a href="{% url 'messaging:inbox' %}" class="nav-link {% if active_tab == 'inbox' %}active{% endif %}">
+        <i class="bi bi-inbox"></i> Inbox
+        {% if unread_count %}<span class="nav-badge">{{ unread_count }}</span>{% endif %}
+    </a>
+    <a href="{% url 'messaging:sent' %}" class="nav-link {% if active_tab == 'sent' %}active{% endif %}">
+        <i class="bi bi-send"></i> Sent
+    </a>
+    <a href="{% url 'messaging:drafts' %}" class="nav-link {% if active_tab == 'drafts' %}active{% endif %}">
+        <i class="bi bi-file-earmark-text"></i> Drafts
+    </a>
+
+    <div class="sidebar-section mt-2">Navigation</div>
+    <a href="#" class="nav-link"><i class="bi bi-people"></i> Teams</a>
+    <a href="#" class="nav-link"><i class="bi bi-diagram-3"></i> Organisation</a>
+    <a href="#" class="nav-link"><i class="bi bi-calendar3"></i> Calendar</a>
+    <a href="#" class="nav-link"><i class="bi bi-bar-chart"></i> Performance</a>
+
+    <div style="position:absolute;bottom:16px;left:12px;font-size:9px;color:var(--t2);">© Sky 2026</div>
+</nav>
+{% endif %}
+
+<main id="main-content" {% if not user.is_authenticated %}style="margin-left:0;"{% endif %}>
+    {% if messages %}
+    <div class="django-messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    setTimeout(() => {
+        document.querySelectorAll('.django-messages .alert').forEach(el => {
+            new bootstrap.Alert(el).close();
+        });
+    }, 4000);
+
+    {% if user.is_authenticated %}
+    function updateUnreadBadge() {
+        fetch("{% url 'messaging:unread_count_api' %}")
+            .then(r => r.json())
+            .then(data => {
+                const badge = document.getElementById('nav-unread-badge');
+                if (data.unread_count > 0) {
+                    if (badge) badge.textContent = data.unread_count;
+                    else {
+                        const icon = document.querySelector('a[title="Inbox"]');
+                        if (icon) {
+                            const b = document.createElement('span');
+                            b.id = 'nav-unread-badge';
+                            b.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
+                            b.textContent = data.unread_count;
+                            icon.appendChild(b);
+                        }
+                    }
+                } else {
+                    if (badge) badge.remove();
+                }
+            }).catch(() => {});
+    }
+    setInterval(updateUnreadBadge, 30000);
+    {% endif %}
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
