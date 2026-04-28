@@ -1,11 +1,17 @@
+{#
+  Login page. The theme button writes the selected mode to localStorage, and the password eye button lets the user reveal/hide the password input.
+  Comments in this template are written to make the coursework code easier to follow during marking/demo.
+#}
 {% extends "base/auth_base.html" %}
 {% load static %}
 {% block title %}Sign In – Sky Engineering Portal{% endblock %}
 {% block content %}
+{# Outer auth shell centres the split login screen on the page. #}
 <div class="auth-shell">
     <div class="auth-frame">
         <div class="auth-visual"></div>
         <div class="auth-panel">
+            {# Theme toggle appears only on auth pages; localStorage keeps the choice after login. #}
             <button type="button" id="theme-toggle" class="auth-theme-toggle" aria-label="Toggle light and dark mode"><i id="theme-toggle-icon" class="bi bi-moon"></i><span>Theme</span></button>
             <div class="auth-card">
                 <div class="auth-logo"><img src="{% static 'img/sky_logo.png' %}" alt="Sky"></div>
@@ -27,6 +33,7 @@
 
                     <div class="mb-2 password-field">
                         <label class="form-label">Password</label>
+                        {# Wrapper lets the eye icon sit inside the password box and stay vertically centred. #}
                         <div class="password-input-wrap">
                             <input type="password" id="login-password" name="password" class="form-control" placeholder="Enter your password" required>
                             <button type="button" class="toggle-password" data-target="login-password" aria-label="Show password"><i class="bi bi-eye"></i></button>

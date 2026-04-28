@@ -1,3 +1,10 @@
+"""
+Forms for the Student 3 messaging feature.
+
+Forms keep input handling separate from the views.  This makes the views easier
+to read and also lets Django handle validation and HTML widgets consistently.
+"""
+
 from django import forms
 from django.contrib.auth.models import User
 from .models import Message
@@ -5,9 +12,13 @@ from .models import Message
 
 class ComposeMessageForm(forms.ModelForm):
     """
-    Form for composing a new message or editing a draft.
-    Recipients are selected from all active users (excluding the sender).
+    Form used for both composing a new message and editing a saved draft.
+
+    It is based on the Message model, but includes a custom recipients field so
+    users can choose one or more registered users to send the message to.
     """
+
+    # ModelMultipleChoiceField allows more than one recipient to be selected.
     recipients = forms.ModelMultipleChoiceField(
         queryset=User.objects.filter(is_active=True),
         widget=forms.SelectMultiple(attrs={
@@ -18,9 +29,12 @@ class ComposeMessageForm(forms.ModelForm):
     )
 
     class Meta:
+        # This form creates/updates Message objects.
         model = Message
         fields = ['recipients', 'subject', 'body']
         widgets = {
+            # Bootstrap classes are applied here so every template using the form
+            # automatically gets the correct styling.
             'subject': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Subject...',
@@ -34,13 +48,20 @@ class ComposeMessageForm(forms.ModelForm):
         }
 
     def __init__(self, *args, current_user=None, **kwargs):
+        """
+        Customise the form each time it is created.
+
+        The current user is passed in by the view so they can be excluded from
+        the recipient list.  This prevents users sending messages to themselves.
+        """
         super().__init__(*args, **kwargs)
-        # Exclude the sender from recipient choices
+
         if current_user:
+            # Only active users are shown and the sender is excluded.
             qs = User.objects.filter(is_active=True).exclude(pk=current_user.pk)
             self.fields['recipients'].queryset = qs.order_by('first_name', 'last_name')
 
-        # Show "Full Name (username)" in the dropdown
+        # Show a human-friendly label in the recipient dropdown.
         self.fields['recipients'].label_from_instance = lambda u: (
             f"{u.get_full_name()} ({u.username})" if u.get_full_name().strip() else u.username
         )

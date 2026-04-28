@@ -1,3 +1,7 @@
+{#
+  Shared logged-in layout. It controls the sidebar, top search bar, message notification icon, dark-mode variables and reusable styling for authenticated pages.
+  Comments in this template are written to make the coursework code easier to follow during marking/demo.
+#}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -661,9 +665,6 @@
                     <input type="text" placeholder="Search teams, members or locations...">
                 </div>
                 <div class="topbar-actions">
-                    <button type="button" id="moon-shortcut" class="icon-btn" aria-label="Dark mode shortcut">
-                        <i class="bi bi-moon"></i>
-                    </button>
                     <a href="{% url 'messaging:inbox' %}" class="icon-btn position-relative text-decoration-none" aria-label="Notifications">
                         <i class="bi bi-bell"></i>
                         {% if unread_count %}
@@ -699,7 +700,6 @@
         (function () {
             const root = document.documentElement;
             const mainToggle = document.getElementById('theme-toggle');
-            const moonShortcut = document.getElementById('moon-shortcut');
             const mainIcon = document.getElementById('theme-toggle-icon');
 
             function applyTheme(theme) {
@@ -707,10 +707,6 @@
                 localStorage.setItem('sky-theme', theme);
                 if (mainIcon) {
                     mainIcon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
-                }
-                const shortcutIcon = moonShortcut ? moonShortcut.querySelector('i') : null;
-                if (shortcutIcon) {
-                    shortcutIcon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
                 }
             }
 
@@ -722,7 +718,6 @@
             }
 
             if (mainToggle) mainToggle.addEventListener('click', toggleTheme);
-            if (moonShortcut) moonShortcut.addEventListener('click', toggleTheme);
 
             document.querySelectorAll('.toggle-password').forEach(function(button) {
                 button.addEventListener('click', function () {

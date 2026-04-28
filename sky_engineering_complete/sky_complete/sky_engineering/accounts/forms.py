@@ -1,3 +1,10 @@
+"""
+Forms for registration and profile editing.
+
+The forms keep validation and widget styling separate from the views.  This is
+cleaner than manually reading raw POST data inside view functions.
+"""
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -6,10 +13,14 @@ from .models import UserProfile
 
 class RegistrationForm(UserCreationForm):
     """
-    Self-registration form. Local accounts only (no Google/OAuth).
-    Requirement: Users must be able to self-register for an account.
-    Profile fields required: name, username, email address, password.
+    Local account registration form.
+
+    The coursework brief asks for self-registration using local accounts.  This
+    form builds on Django's UserCreationForm so password validation and hashing
+    are handled by Django rather than custom code.
     """
+
+    # These fields are required so the profile has enough basic information.
     first_name = forms.CharField(
         max_length=50, required=True,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name'})
@@ -24,6 +35,7 @@ class RegistrationForm(UserCreationForm):
     )
 
     class Meta:
+        # These fields are saved on Django's built-in User model.
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
         widgets = {
@@ -31,23 +43,40 @@ class RegistrationForm(UserCreationForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """Add Bootstrap styling and placeholders to the password fields."""
         super().__init__(*args, **kwargs)
-        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
-        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Enter your password',
+        })
+        self.fields['password2'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Confirm your password',
+        })
 
     def save(self, commit=True):
+        """
+        Save the user and copy extra form fields into the User object.
+
+        commit=False is used first so we can attach email/name values before the
+        User is written to the database.
+        """
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
+
         if commit:
             user.save()
+            # The signal also creates a profile, but get_or_create keeps this safe
+            # if the signal has already run.
             UserProfile.objects.get_or_create(user=user)
         return user
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    """Update core User fields (name, email)."""
+    """Form for updating the built-in User fields on the profile page."""
+
     first_name = forms.CharField(
         max_length=50,
         widget=forms.TextInput(attrs={'class': 'form-control'})
@@ -66,7 +95,8 @@ class ProfileUpdateForm(forms.ModelForm):
 
 
 class ExtendedProfileForm(forms.ModelForm):
-    """Update extended UserProfile fields."""
+    """Form for updating the extra UserProfile fields."""
+
     class Meta:
         model = UserProfile
         fields = ['job_title', 'department', 'slack_handle']
