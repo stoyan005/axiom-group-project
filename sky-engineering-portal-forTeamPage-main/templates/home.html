@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+<!-- Uses base layout (sidebar, header, etc.) -->
+
+{% block content %}
+<!-- Everything here fills the content section of base.html -->
+
+<h1 class="page-title">Dashboard</h1>
+
+<!-- TOP DASHBOARD CARDS -->
+<div class="dashboard-grid">
+
+    <!-- Tasks completed card -->
+    <div class="dashboard-card">
+        <h3>Tasks completed this month</h3>
+        <!-- Displays number from views.py -->
+        <p class="big-number">{{ task_count }} tasks</p>
+    </div>
+
+    <!-- Projects started card -->
+    <div class="dashboard-card">
+        <h3>Projects started</h3>
+        <!-- Displays team/project count -->
+        <p class="big-number">{{ project_count }} projects</p>
+    </div>
+
+    <!-- Upcoming meetings card -->
+    <div class="dashboard-card">
+        <h3>Upcoming Meetings</h3>
+        <ul>
+            <!-- Loop through meetings -->
+            {% for meeting in upcoming_meetings %}
+                <li>{{ meeting.title }} - {{ meeting.date }}</li>
+            {% empty %}
+                <!-- If no meetings -->
+                <li>No upcoming meetings</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+<!-- BUTTON SECTION -->
+<div class="link-row">
+    <!-- Link to teams page -->
+    <a href="{% url 'team_list' %}" class="btn">Go to Teams</a>
+</div>
+
+<!-- BOTTOM DASHBOARD SECTION -->
+<div class="dashboard-bottom">
+
+    <!-- GIT COMMITS GRAPH CARD -->
+    <div class="dashboard-card git-card">
+        <h3>Your team’s recent Git commits:</h3>
+        <!-- Cytoscape graph will render inside this div -->
+        <div id="cy" style="width:100%; height:250px;"></div>
+    </div>
+
+    <!-- PROGRESS CIRCLE CARD -->
+    <div class="dashboard-card progress-card">
+        <h3>Progress to finishing the current project:</h3>
+
+        <!-- Circular progress bar using conic-gradient -->
+        <div class="progress-circle"
+             style="background: conic-gradient(
+                #8a5cff 0%,              /* purple start */
+                #c85cff 20%,            /* blend colour */
+                #ff4f8b 40%,            /* pink */
+                #ff7a5c {{ progress }}%,/* orange up to progress % */
+                #ddd {{ progress }}% 100% /* grey remaining */
+             );">
+            <!-- Shows percentage in centre -->
+            <span>{{ progress }}%</span>
+        </div>
+    </div>
+
+    <!-- UPCOMING TASKS CARD -->
+    <div class="dashboard-card task-card">
+        <h3>Upcoming Tasks</h3>
+
+        <ul>
+            <!-- Loop through tasks -->
+            {% for task in upcoming_tasks %}
+                <li>{{ task }}</li>
+            {% empty %}
+                <!-- If no tasks -->
+                <li>No upcoming tasks</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+<!-- CYTOSCAPE LIBRARY (for graph visualisation) -->
+<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Initialise graph
+    cytoscape({
+        container: document.getElementById('cy'),
+
+        // GRAPH DATA (nodes + connections)
+        elements: [
+            {% for commit in commits %}
+                // Each commit becomes a node
+                { data: { id: 'c{{ forloop.counter }}', label: '{{ commit.message|escapejs }}' } },
+
+                {% if not forloop.first %}
+                    // Connect previous commit to current one
+                    { data: { source: 'c{{ forloop.counter0 }}', target: 'c{{ forloop.counter }}' } },
+                {% endif %}
+            {% empty %}
+                // If no commits exist
+                { data: { id: 'c1', label: 'No commits added' } }
+            {% endfor %}
+        ],
+
+        // GRAPH STYLING
+        style: [
+            {
+    selector: 'node',
+    style: {
+        'label': 'data(label)',
+        'background-color': '#777',   // grey dot
+        'text-valign': 'center',
+        'color': '#ffffff',              // keep white (best readability)
+        'font-size': '12px',             // makes it bigger
+        'text-outline-width': 2,
+        'text-outline-color': '#000000'  // outline matches node
+    }
+},
+            {
+                selector: 'edge',
+                style: {
+                    'width': 2,
+                    'line-color': '#ff9f55'        // connection line colour
+                }
+            }
+        ],
+
+        // GRAPH LAYOUT (top → bottom)
+        layout: {
+            name: 'breadthfirst',
+            directed: true,
+            padding: 10
+        }
+    });
+});
+</script>
+
+{% endblock %}

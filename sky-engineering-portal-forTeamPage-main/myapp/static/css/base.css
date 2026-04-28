@@ -1,0 +1,349 @@
+/* applies to all elements - resets default spacing and sets font */
+* {
+    box-sizing: border-box; /* includes padding/border in element width */
+    margin: 0; /* removes default margin */
+    padding: 0; /* removes default padding */
+    font-family: Arial, sans-serif; /* sets global font */
+}
+
+/* page background and text colour */
+body {
+    background: #f2f2f2; /* light grey background */
+    color: #222; /* dark text */
+}
+
+/* main layout container */
+.layout {
+    display: flex; /* side-by-side layout */
+    min-height: 100vh; /* full screen height */
+}
+
+/* sidebar styling */
+.sidebar {
+    width: 220px; /* fixed width */
+    background: #ffffff; /* white background */
+    border-right: 1px solid #ddd; /* separator line */
+    padding: 24px 16px; /* inner spacing */
+}
+
+/* logo styling */
+/* logo styling */
+.logo {
+    display: block;                 
+    font-size: 40px;
+    font-weight: bold;
+
+    margin-bottom: 30px;
+    padding-left: 6px;              
+    padding-top: 4px;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    /* gradient text effect */
+    background: linear-gradient(90deg, #ff4f8b, #8a5cff, #ff9f55);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo:hover {
+    opacity: 0.85;
+}
+
+/* navigation layout */
+.sidebar nav {
+    display: flex;
+    flex-direction: column; /* vertical links */
+    gap: 12px; /* spacing between links */
+}
+
+/* navigation links */
+.sidebar nav a {
+    text-decoration: none; /* removes underline */
+    color: #333;
+    padding: 12px 14px;
+    border-radius: 10px;
+}
+
+/* hover + active link effect */
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background: #e8e8e8;
+}
+
+/* main content area */
+.main {
+    flex: 1; /* takes remaining space */
+    display: flex;
+    flex-direction: column;
+}
+
+/* top navigation bar */
+.topbar {
+    display: flex;
+    justify-content: space-between; /* space between search + icons */
+    align-items: center;
+    padding: 18px 24px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+/* search bar styling */
+.top-search {
+    width: 420px;
+    max-width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 22px; /* rounded edges */
+    background: #f6f6f6;
+}
+
+/* icon container */
+.top-icons {
+    display: flex;
+    gap: 30px; /* spacing between icons */
+    align-items: center;
+}
+
+/* main content padding */
+.content {
+    padding: 24px;
+    width: 100%;
+}
+
+/* page title styling */
+.page-title {
+    font-size: 34px;
+    margin-bottom: 20px;
+}
+
+/* button styling */
+.btn {
+    background: #6c8cff; /* blue colour */
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+/* button hover effect */
+.btn:hover {
+    background: #4f6de0;
+}
+
+/* card container styling */
+.detail-card {
+    background: white;
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* soft shadow */
+}
+
+/* section heading */
+.section-title {
+    margin: 24px 0 12px;
+    font-size: 22px;
+}
+
+/* layout for buttons/links */
+.link-row {
+    margin: 18px 0;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap; /* wraps on small screens */
+}
+
+/* clean list styling */
+ul.clean-list {
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+/* empty state text */
+.empty {
+    color: #777;
+    font-style: italic;
+}
+
+/* team detail page */
+
+/* wrapper for team details */
+.team-detail-wrapper {
+    max-width: 1150px; /* limits width */
+}
+
+/* summary card for team info */
+.team-summary-card {
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+
+    display: grid; /* grid layout */
+    grid-template-columns: 1fr 1fr 100px; /* 3 columns */
+    align-items: center;
+    gap: 30px;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+}
+
+/* headings inside summary card */
+.team-summary-card h3 {
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+/* text inside summary card */
+.team-summary-card p {
+    font-size: 14px;
+}
+
+/* grid for member cards */
+.member-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(180px, 1fr)); /* responsive columns */
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+/* individual member card */
+.member-card {
+    border-radius: 14px;
+    padding: 18px;
+    min-height: 130px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+}
+
+/* member name */
+.member-card h3 {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+/* occupation text spacing */
+.member-card .occupation {
+    margin-top: 34px;
+}
+
+
+
+/* GRID layout for top dashboard cards (3 columns) */
+.dashboard-grid {
+    display: grid; /* enables CSS grid */
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    gap: 24px; /* space between cards */
+}
+
+/* General styling for each dashboard card */
+.dashboard-card {
+    background: white; /* white card background */
+    border-radius: 16px; /* rounded corners */
+    padding: 20px; /* space inside card */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* soft shadow */
+}
+
+/* Large numbers (e.g. task count, project count) */
+.big-number {
+    font-size: 32px; /* makes number big */
+    font-weight: bold; /* bold text */
+    margin-top: 10px; /* spacing above number */
+}
+
+/* Circular progress container */
+.progress-circle {
+    width: 150px; /* circle size */
+    height: 150px;
+    border-radius: 50%; /* makes it circular */
+    display: flex; /* centers inner content */
+    align-items: center;
+    justify-content: center;
+    margin: 24px auto 0; /* center horizontally */
+}
+
+/* Inner white circle (where % is shown) */
+.progress-circle span {
+    width: 105px;
+    height: 105px;
+    background: white; /* white center */
+    border-radius: 50%; /* circular shape */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px; /* size of percentage text */
+    font-weight: bold;
+}
+
+/* Progress card sizing */
+.progress-card {
+    margin-top: 30px; /* pushes it slightly down */
+    max-width: 300px; /* limits width */
+}
+
+/* Bottom section layout (Git + Progress + Tasks) */
+.dashboard-bottom {
+    display: flex; /* horizontal layout */
+    gap: 30px; /* spacing between cards */
+    margin-top: 20px;
+    align-items: flex-start; /* aligns cards at top */
+}
+
+/* Task card grows to fill remaining space */
+.task-card {
+    flex: 1;
+}
+
+/* Git card fixed width */
+.git-card {
+    width: 300px;
+    min-height: 260px; /* ensures minimum height */
+}
+
+/* Vertical commit timeline list */
+.commit-list {
+    list-style: none; /* removes bullet points */
+    margin-top: 18px;
+    padding-left: 24px; /* space for timeline line */
+    border-left: 3px solid #ff9f55; /* vertical orange line */
+}
+
+/* Each commit item */
+.commit-list li {
+    position: relative;
+    margin-bottom: 22px; /* space between commits */
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Circle markers for each commit */
+.commit-list li::before {
+    content: "";
+    position: absolute;
+    left: -31px; /* positions dot on the line */
+    top: 2px;
+    width: 14px;
+    height: 14px;
+    background: #777; /* grey dot */
+    border-radius: 50%; /* circular */
+}
+
+/* (duplicate block) Bottom layout again */
+.dashboard-bottom {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    align-items: flex-start;
+}
+
+/* (duplicate) Git card width */
+.git-card {
+    width: 300px;
+}
+
+/* Task card pushed slightly lower for alignment */
+.task-card {
+    flex: 1;
+    margin-top: 30px; /* pushes it lower */
+}

@@ -1,0 +1,141 @@
+<!-- loads the django static file system to use CSS/JS-->
+{% load static %}
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- shows the page title (default if none is provided) -->
+    <title>{{ page_title|default:"Sky Teams Portal" }}</title>
+
+    <!-- links CSS files from static folder -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/teams.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/darkmode.css' %}">
+
+    <!-- loads Lucide icon library -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="layout"> <!-- main page layout -->
+
+        <!-- sidebar navigation -->
+        <aside class="sidebar">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'images/Sky_logo_2025.svg.png' %}" alt="Sky Logo" height="60">
+            </a>    <!-- logo -->
+
+            <nav>
+                <!-- each link includes an icon + text and highlights if active -->
+                <a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
+                    <i data-lucide="layout-dashboard"></i> <!-- dashboard icon -->
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'team_list' %}" class="{% if '/teams/' in request.path %}active{% endif %}">
+                    <i data-lucide="users"></i> <!-- teams icon -->
+                    <span>Teams</span>
+                </a>
+
+                <a href="#" class="{% if '/organisation/' in request.path %}active{% endif %}">
+                    <i data-lucide="building-2"></i> <!-- organisation icon -->
+                    <span>Organisation</span>
+                </a>
+
+                <a href="#" class="{% if '/messages/' in request.path %}active{% endif %}">
+                    <i data-lucide="message-circle"></i> <!-- messages icon -->
+                    <span>Messages</span>
+                </a>
+
+                <a href="#" class="{% if '/calendar/' in request.path %}active{% endif %}">
+                    <i data-lucide="calendar"></i> <!-- calendar icon -->
+                    <span>Calendar</span>
+                </a>
+
+                <a href="#" class="{% if '/performance/' in request.path %}active{% endif %}">
+                    <i data-lucide="gauge"></i> <!-- performance icon -->
+                    <span>Performance</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- main content area -->
+        <main class="main">
+            <header class="topbar">
+
+                <!-- search form -->
+                <form method="GET" action="{% url 'team_list' %}" class="top-search-form">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        placeholder="Search teams, members or locations..." 
+                        class="top-search"
+                        value="{{ query|default:'' }}"
+                    >
+                </form>
+
+                <!-- top right icons -->
+                <div class="top-icons">
+
+                    <!-- dark mode toggle button -->
+                    <button id="theme-toggle" class="icon-btn" type="button">
+                        <i data-lucide="moon"></i> <!-- default icon -->
+                    </button>
+
+                    <!-- notification icon -->
+                    <span><i data-lucide="bell"></i></span>
+
+                    <!-- user profile icon -->
+                    <span><i data-lucide="user"></i></span>
+                </div>
+            </header>
+
+            <!-- page-specific content will go here -->
+            <section class="content">
+                {% block content %}{% endblock %}
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // activates all lucide icons
+        lucide.createIcons();
+
+        const toggleBtn = document.getElementById('theme-toggle');
+
+        // function to update the icon (moon or sun)
+        function setThemeIcon(iconName) {
+            if (toggleBtn) {
+                toggleBtn.innerHTML = `<i data-lucide="${iconName}"></i>`;
+                lucide.createIcons(); // re-render icon
+            }
+        }
+
+        // check saved theme in browser
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode'); // apply dark mode
+            setThemeIcon('sun'); // show sun icon
+        } else {
+            setThemeIcon('moon'); // show moon icon
+        }
+
+        // toggle theme when button is clicked
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark'); // save dark mode
+                    setThemeIcon('sun'); // switch icon
+                } else {
+                    localStorage.setItem('theme', 'light'); // save light mode
+                    setThemeIcon('moon'); // switch icon
+                }
+            });
+        }
+    </script>
+</body>
+</html>
