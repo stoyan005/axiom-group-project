@@ -124,6 +124,7 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "myapp" / "static",
+    BASE_DIR / "planner" / "static",
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

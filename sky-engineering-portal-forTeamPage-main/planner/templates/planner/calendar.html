@@ -1,209 +1,896 @@
-<!-- 
-Author: Student 4 (Alexandra-Maria Paraschiv)
--->
-
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
-    <title>Axiom | Calendar</title>
+    <title>Sky Engineering | Planner</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-      :root {
-        --sidebar-width: 260px;
-        --axiom-black: #1a1a1a;
-        --axiom-gray: #f9f9f9;
-        --border-color: #e0e0e0;
+      :root[data-theme="light"] {
+        --bg-page: #f2f2f7;
+        --bg-header: #ffffff;
+        --bg-sidebar: #ffffff;
+        --bg-content-shell: #f2f2f7;
+        --bg-card: #ffffff;
+        --bg-search: #f2f2f7;
+        --bg-nav-hover: #f2f2f7;
+        --bg-nav-active: #e8e8ed;
+        --text-primary: #1d1d1f;
+        --text-secondary: #86868b;
+        --text-muted: #aeaeb2;
+        --border: #e5e5ea;
+        --border-cell: #d2d2d7;
+        --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+        --accent: #0071e3;
+        --event-blue: #dbeafe;
+        --event-blue-text: #1e40af;
+        --underline-purple: #a855f7;
+        --underline-pink: #ec4899;
+        --underline-orange: #f97316;
+      }
+
+      :root[data-theme="dark"] {
+        --bg-page: #000000;
+        --bg-header: #1c1c1e;
+        --bg-sidebar: #1c1c1e;
+        --bg-content-shell: #0a0a0c;
+        --bg-card: #2c2c2e;
+        --bg-search: #2c2c2e;
+        --bg-nav-hover: #2c2c2e;
+        --bg-nav-active: #3a3a3c;
+        --text-primary: #f5f5f7;
+        --text-secondary: #98989d;
+        --text-muted: #636366;
+        --border: #38383a;
+        --border-cell: #3a3a3c;
+        --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+        --accent: #0a84ff;
+        --event-blue: #1e3a5f;
+        --event-blue-text: #93c5fd;
+        --underline-purple: #c084fc;
+        --underline-pink: #f472b6;
+        --underline-orange: #fb923c;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        transition: background-color 0.3s ease, color 0.3s ease,
+          border-color 0.3s ease, box-shadow 0.3s ease;
       }
 
       body {
-        margin: 0;
-        font-family: "Inter", sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI",
+          sans-serif;
+        background-color: var(--bg-page);
+        color: var(--text-primary);
         display: flex;
-        background-color: var(--axiom-gray);
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: var(--bg-header);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        z-index: 1000;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex: 1;
+      }
+
+      .logo-img {
+        height: 32px;
+        width: auto;
+      }
+
+      .search-container {
+        display: flex;
+        align-items: center;
+        background: var(--bg-search);
+        padding: 8px 14px;
+        border-radius: 20px;
+        width: 420px;
+        max-width: 500px;
+        gap: 8px;
+        border: 1px solid transparent;
+      }
+
+      .search-container:focus-within {
+        border-color: var(--border);
+      }
+
+      .search-input {
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text-primary);
+        width: 100%;
+        font-size: 0.9rem;
+      }
+
+      .search-input::placeholder {
+        color: var(--text-muted);
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .icon-btn {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        position: relative;
+      }
+
+      .icon-btn:hover {
+        background: var(--bg-nav-hover);
+      }
+
+      .icon-btn .badge {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 8px;
+        height: 8px;
+        background: #ef4444;
+        border-radius: 50%;
+        border: 2px solid var(--bg-header);
+      }
+
+      .user-profile-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 4px;
+      }
+
+      .user-profile-btn:hover {
+        background: var(--bg-nav-hover);
+      }
+
+      .user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .layout {
+        display: flex;
+        margin-top: 60px;
+        height: calc(100vh - 60px);
       }
 
       .sidebar {
-        width: var(--sidebar-width);
-        height: 100vh;
-        background: white;
-        border-right: 1px solid var(--border-color);
-        padding: 2rem 1.5rem;
-        position: fixed;
+        width: 220px;
+        background: var(--bg-sidebar);
+        padding: 16px 10px;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        position: relative;
       }
 
-      .logo {
-        font-size: 1.5rem;
-        font-weight: 800;
-        margin-bottom: 2rem;
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
       }
 
-      .btn-add {
-        background: var(--axiom-black);
-        color: white;
-        border: none;
-        padding: 12px;
-        width: 100%;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        margin-bottom: 2rem;
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        text-decoration: none;
+        color: var(--text-secondary);
+        border-radius: 10px;
+        margin-bottom: 2px;
+        font-size: 0.875rem;
+        font-weight: 400;
+      }
+
+      .nav-link:hover {
+        background: var(--bg-nav-hover);
+        color: var(--text-primary);
+      }
+
+      .nav-link.active {
+        background: var(--bg-nav-active);
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+
+      .sidebar-footer {
+        margin-top: auto;
+        padding: 10px 14px;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        text-align: center;
+      }
+
+      .content-area {
+        flex: 1;
+        display: flex;
+        background: var(--bg-content-shell);
+        padding: 20px;
+        gap: 20px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        margin: 12px;
+        margin-left: 0;
       }
 
       .main-content {
-        margin-left: var(--sidebar-width);
-        flex-grow: 1;
-        padding: 3rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
       }
 
       .calendar-header {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        margin-bottom: 2rem;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .calendar-header h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .calendar-nav {
+        display: flex;
+        gap: 8px;
+      }
+
+      .calendar-nav button {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px 10px;
+        cursor: pointer;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+      }
+
+      .calendar-nav button:hover {
+        background: var(--bg-nav-hover);
+      }
+
+      .calendar-wrapper {
+        background: var(--bg-card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+        flex: 1;
+      }
+
+      .day-header-row {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        border-bottom: 1px solid var(--border-cell);
+      }
+
+      .day-header {
+        padding: 10px 8px;
+        text-align: left;
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        text-transform: uppercase;
       }
 
       .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 1px;
-        background-color: var(--border-color);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        overflow: hidden;
+        flex: 1;
       }
 
-      .day-header {
-        background: white;
-        padding: 10px;
-        text-align: center;
-        font-weight: 600;
+      .day-box {
+        min-height: 130px;
+        border-right: 1px solid var(--border-cell);
+        border-bottom: 1px solid var(--border-cell);
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .day-box:nth-child(7n) {
+        border-right: none;
+      }
+
+      .day-number {
         font-size: 0.8rem;
-        color: #666;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 4px;
       }
 
-      .day-cell {
-        background: white;
-        min-height: 120px;
-        padding: 10px;
-        transition: background 0.2s;
+      .day-number.other-month {
+        color: var(--text-muted);
       }
 
-      .day-cell:hover {
-        background: #fafafa;
-      }
-      .day-cell.empty {
-        background: #fdfdfd;
+      .day-box.today .day-number {
+        background: var(--text-primary);
+        color: var(--bg-card);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
-      .task-tag {
-        font-size: 0.75rem;
-        padding: 4px 8px;
+      .event-tag {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-weight: 500;
+        margin-top: 2px;
+        background: var(--event-blue);
+        color: var(--event-blue-text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .right-panel {
+        width: 300px;
+        flex-shrink: 0;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .meeting-card {
+        background: var(--bg-card);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: var(--shadow-card);
+        position: relative;
+      }
+
+      .meeting-card-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        padding-bottom: 6px;
+        margin-bottom: 12px;
+        position: relative;
+      }
+
+      .meeting-card-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 2px;
+      }
+
+      .meeting-card-title.purple::after {
+        background: var(--underline-purple);
+      }
+
+      .meeting-card-title.pink::after {
+        background: var(--underline-pink);
+      }
+
+      .meeting-card-title.orange::after {
+        background: var(--underline-orange);
+      }
+
+      .meeting-detail {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-top: 10px;
+      }
+
+      .meeting-detail i {
+        width: 16px;
+        height: 16px;
+        color: var(--text-muted);
+        flex-shrink: 0;
+      }
+
+      .kebab-menu {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        padding: 4px;
         border-radius: 4px;
-        margin-top: 5px;
-        color: #222;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .kebab-menu:hover {
+        background: var(--bg-nav-hover);
+      }
+
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        z-index: 2000;
+        min-width: 200px;
+        padding: 6px;
+      }
+
+      .dropdown-menu.show {
+        display: block;
+      }
+
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        color: var(--text-primary);
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .dropdown-item:hover {
+        background: var(--bg-nav-hover);
+      }
+
+      .dropdown-item i {
+        color: var(--text-secondary);
+      }
+
+      .dropdown-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 4px 0;
+      }
+
+      .dropdown-notification {
+        padding: 10px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-bottom: 4px;
+      }
+
+      .dropdown-notification:hover {
+        background: var(--bg-nav-hover);
+      }
+
+      .dropdown-notification .notif-title {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .dropdown-notification .notif-desc {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+
+      .dropdown-notification .notif-time {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+
+      #notification-dropdown {
+        right: 60px;
+        top: 52px;
+        width: 280px;
+      }
+
+      #user-dropdown {
+        right: 20px;
+        top: 52px;
+        width: 200px;
+      }
+
+      .notification-dropdown-header {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 6px;
+      }
+
+      .notification-dropdown-footer {
+        padding: 8px 12px;
+        text-align: center;
+        border-top: 1px solid var(--border);
+        margin-top: 4px;
+      }
+
+      .notification-dropdown-footer a {
+        font-size: 0.8rem;
+        color: var(--accent);
+        text-decoration: none;
         font-weight: 500;
       }
-      .maths {
-        background: #e3f2fd;
-        border-left: 3px solid #2196f3;
-      }
-      .project {
-        background: #f3e5f5;
-        border-left: 3px solid #9c27b0;
-      }
-      .personal {
-        background: #e8f5e9;
-        border-left: 3px solid #4caf50;
+
+      .notification-dropdown-footer a:hover {
+        text-decoration: underline;
       }
     </style>
   </head>
   <body>
-    <nav class="sidebar">
-      <div class="logo">Axiom</div>
-      <button class="btn-add">+ Add Task</button>
-      <div style="color: #666">
-        <p>Dashboard</p>
-        <p style="color: black; font-weight: bold">Calendar</p>
+    <header class="header">
+      <div class="header-left">
+        <img
+          src="{% static 'planner/images/logo.png' %}"
+          alt="Sky Logo"
+          class="logo-img"
+        />
+        <div class="search-container">
+          <i data-lucide="search" size="16"></i>
+          <input
+            type="text"
+            placeholder="Search teams, members or locations..."
+            class="search-input"
+          />
+        </div>
       </div>
-    </nav>
 
-    <main class="main-content">
-      <div class="calendar-header">
-        <h1 style="margin: 0">{{ curr_month_name }} {{ curr_year }}</h1>
+      <div class="header-right">
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">
+          <i data-lucide="sun" id="theme-icon-sun" size="20"></i>
+          <i
+            data-lucide="moon"
+            id="theme-icon-moon"
+            size="20"
+            style="display: none"
+          ></i>
+        </button>
+
+        <button
+          class="icon-btn"
+          onclick="toggleDropdown('notification-dropdown')"
+          title="Notifications"
+        >
+          <i data-lucide="bell" size="20"></i>
+          <span class="badge"></span>
+        </button>
+
+        <button
+          class="user-profile-btn"
+          onclick="toggleDropdown('user-dropdown')"
+          title="Profile"
+        >
+          <img
+            src="https://ui-avatars.com/api/?name=Alexandra&background=random"
+            class="user-avatar"
+          />
+        </button>
+
+        <div class="dropdown-menu" id="notification-dropdown">
+          <div class="notification-dropdown-header">Notifications</div>
+          <div class="dropdown-notification">
+            <div class="notif-title">ERD Brainstorming</div>
+            <div class="notif-desc">Meeting starts in 30 minutes</div>
+            <div class="notif-time">8:00 AM</div>
+          </div>
+          <div class="dropdown-notification">
+            <div class="notif-title">Product Advertising</div>
+            <div class="notif-desc">Reminder: Meeting at 5:00 PM</div>
+            <div class="notif-time">2 hours ago</div>
+          </div>
+          <div class="dropdown-notification">
+            <div class="notif-title">New comment on your task</div>
+            <div class="notif-desc">John commented on "UI/UX Design"</div>
+            <div class="notif-time">Yesterday</div>
+          </div>
+          <div class="notification-dropdown-footer">
+            <a href="#">View all notifications</a>
+          </div>
+        </div>
+
+        <div class="dropdown-menu" id="user-dropdown">
+          <div class="dropdown-item">
+            <i data-lucide="user" size="16"></i>
+            <span>My Profile</span>
+          </div>
+          <div class="dropdown-item">
+            <i data-lucide="settings" size="16"></i>
+            <span>Settings</span>
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item">
+            <i data-lucide="log-out" size="16"></i>
+            <span>Log out</span>
+          </div>
+        </div>
       </div>
+    </header>
 
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-nav">
+          <a href="#" class="nav-link">
+            <i data-lucide="layout-dashboard" size="18"></i>
+            Dashboard
+          </a>
+          <a href="#" class="nav-link">
+            <i data-lucide="users" size="18"></i>
+            Teams
+          </a>
+          <a href="#" class="nav-link">
+            <i data-lucide="building-2" size="18"></i>
+            Organisation
+          </a>
+          <a href="#" class="nav-link">
+            <i data-lucide="message-square" size="18"></i>
+            Messages
+          </a>
+          <a href="#" class="nav-link active">
+            <i data-lucide="calendar" size="18"></i>
+            Calendar
+          </a>
+          <a href="#" class="nav-link">
+            <i data-lucide="circle-check" size="18"></i>
+            Performance
+          </a>
+        </div>
+
+        <div class="sidebar-footer">© Sky 2026</div>
+      </aside>
+
+      <div class="content-area">
+        <main class="main-content">
+          <div class="calendar-header">
+            <h2>{{ curr_month_name }} {{ curr_year }}</h2>
+            <div class="calendar-nav">
+              <button onclick="toggleModal()" title="New event">
+                <i data-lucide="plus" size="16"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="calendar-wrapper">
+            <div class="day-header-row">
+              <div class="day-header">Mon</div>
+              <div class="day-header">Tue</div>
+              <div class="day-header">Wed</div>
+              <div class="day-header">Thu</div>
+              <div class="day-header">Fri</div>
+              <div class="day-header">Sat</div>
+              <div class="day-header">Sun</div>
+            </div>
+            <div class="calendar-grid">
+              {% for week in month_days %} {% for day in week %}
+              <div class="day-box">
+                {% if day != 0 %}
+                <span class="day-number">{{ day }}</span>
+                {% for task in tasks %} {% if task.date.day == day %}
+                <div class="event-tag">{{ task.title }}</div>
+                {% endif %} {% endfor %} {% endif %}
+              </div>
+              {% endfor %} {% endfor %}
+            </div>
+          </div>
+        </main>
+
+        <div class="right-panel">
+          <div class="meeting-card">
+            <div class="meeting-card-title purple">Upcoming meetings</div>
+            <div class="meeting-detail">
+              <i data-lucide="calendar" size="14"></i>
+              <span>ERD Brainstorming</span>
+            </div>
+            <div class="meeting-detail">
+              <i data-lucide="clock" size="14"></i>
+              <span>8:00 AM - 10:00 AM</span>
+            </div>
+            <div class="meeting-detail">
+              <i data-lucide="map-pin" size="14"></i>
+              <span>Voice Chat</span>
+            </div>
+            <button class="kebab-menu">
+              <i data-lucide="more-vertical" size="14"></i>
+            </button>
+          </div>
+
+          <div class="meeting-card">
+            <div class="meeting-card-title pink">Upcoming meetings</div>
+            <div class="meeting-detail">
+              <i data-lucide="calendar" size="14"></i>
+              <span>Product Advertising</span>
+            </div>
+            <div class="meeting-detail">
+              <i data-lucide="clock" size="14"></i>
+              <span>5:00 PM - 7:00 PM</span>
+            </div>
+            <div class="meeting-detail">
+              <i data-lucide="map-pin" size="14"></i>
+              <span>Marylebone Campus</span>
+            </div>
+            <button class="kebab-menu">
+              <i data-lucide="more-vertical" size="14"></i>
+            </button>
+          </div>
+
+          <div class="meeting-card">
+            <div class="meeting-card-title orange">Upcoming meetings</div>
+            <div class="meeting-detail">
+              <i data-lucide="calendar" size="14"></i>
+              <span>UI/UX Design</span>
+            </div>
+            <div class="meeting-detail">
+              <i data-lucide="clock" size="14"></i>
+              <span>1:30 PM - 2:30 PM</span>
+            </div>
+            <div class="meeting-detail">
+              <i data-lucide="map-pin" size="14"></i>
+              <span>Cavendish Building</span>
+            </div>
+            <button class="kebab-menu">
+              <i data-lucide="more-vertical" size="14"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="taskModal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 2000;
+        backdrop-filter: blur(2px);
+      "
+    >
       <div
-        id="taskModal"
         style="
-          display: none;
-          position: fixed;
-          z-index: 1;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.5);
+          background: var(--bg-card);
+          width: 380px;
+          margin: 100px auto;
+          padding: 2rem;
+          border-radius: 12px;
         "
       >
-        <div
-          style="
-            background: white;
-            margin: 10% auto;
-            padding: 30px;
-            width: 400px;
-            border-radius: 12px;
-          "
-        >
-          <h2>Add New Task</h2>
-          <form method="post">
-            {% csrf_token %} {{ form.as_p }}
-            <button type="submit" class="btn-add">Save Task</button>
-            <button
-              type="button"
-              onclick="toggleModal()"
-              style="
-                background: none;
-                border: none;
-                color: red;
-                cursor: pointer;
-              "
-            >
-              Cancel
-            </button>
-          </form>
-        </div>
+        <h3 style="margin-top: 0; color: var(--text-primary)">Create Task</h3>
+        <form method="post">
+          {% csrf_token %} {{ form.as_p }}
+          <button
+            type="submit"
+            style="
+              width: 100%;
+              padding: 12px;
+              background: var(--accent);
+              color: white;
+              border: none;
+              border-radius: 8px;
+              font-weight: 600;
+              cursor: pointer;
+              margin-top: 12px;
+            "
+          >
+            Save to Calendar
+          </button>
+          <button
+            type="button"
+            onclick="toggleModal()"
+            style="
+              width: 100%;
+              margin-top: 10px;
+              background: none;
+              border: none;
+              color: var(--text-secondary);
+              cursor: pointer;
+            "
+          >
+            Cancel
+          </button>
+        </form>
       </div>
+    </div>
 
-      <script>
-        function toggleModal() {
-          var modal = document.getElementById("taskModal");
-          modal.style.display =
-            modal.style.display === "none" ? "block" : "none";
+    <script>
+      lucide.createIcons();
+
+      function toggleModal() {
+        const m = document.getElementById("taskModal");
+        m.style.display = m.style.display === "block" ? "none" : "block";
+      }
+
+      function toggleTheme() {
+        const html = document.documentElement;
+        const isDark = html.getAttribute("data-theme") === "dark";
+        const newTheme = isDark ? "light" : "dark";
+        html.setAttribute("data-theme", newTheme);
+        document.getElementById("theme-icon-sun").style.display = isDark
+          ? "block"
+          : "none";
+        document.getElementById("theme-icon-moon").style.display = isDark
+          ? "none"
+          : "block";
+        localStorage.setItem("theme", newTheme);
+      }
+
+      (function () {
+        const saved = localStorage.getItem("theme");
+        if (saved) {
+          document.documentElement.setAttribute("data-theme", saved);
+          document.getElementById("theme-icon-sun").style.display =
+            saved === "dark" ? "block" : "none";
+          document.getElementById("theme-icon-moon").style.display =
+            saved === "dark" ? "none" : "block";
         }
+      })();
 
-        document.querySelector(".btn-add").onclick = toggleModal;
-      </script>
+      function toggleDropdown(id) {
+        const dropdown = document.getElementById(id);
+        const isOpen = dropdown.classList.contains("show");
+        closeAllDropdowns();
+        if (!isOpen) {
+          dropdown.classList.add("show");
+        }
+      }
 
-      <div class="calendar-grid">
-        <div class="day-header">SUN</div>
-        <div class="day-header">MON</div>
-        <div class="day-header">TUE</div>
-        <div class="day-header">WED</div>
-        <div class="day-header">THU</div>
-        <div class="day-header">FRI</div>
-        <div class="day-header">SAT</div>
+      function closeAllDropdowns() {
+        document
+          .querySelectorAll(".dropdown-menu")
+          .forEach((d) => d.classList.remove("show"));
+      }
 
-        {% for week in month_days %} {% for day in week %}
-        <div class="day-cell {% if day == 0 %}empty{% endif %}">
-          {% if day != 0 %}
-          <span class="day-num">{{ day }}</span>
-
-          {% for task in tasks %} {% if task.date.day == day %}
-          <div class="task-tag {{ task.category }}">{{ task.title }}</div>
-          {% endif %} {% endfor %} {% endif %}
-        </div>
-        {% endfor %} {% endfor %}
-      </div>
-    </main>
+      document.addEventListener("click", function (e) {
+        if (
+          !e.target.closest(".icon-btn") &&
+          !e.target.closest(".user-profile-btn") &&
+          !e.target.closest(".dropdown-menu")
+        ) {
+          closeAllDropdowns();
+        }
+      });
+    </script>
   </body>
 </html>
