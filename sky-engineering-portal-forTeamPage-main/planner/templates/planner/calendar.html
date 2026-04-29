@@ -1,3 +1,7 @@
+<!-- 
+Author: Student 4 (Alexandra-Maria Paraschiv)
+-->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -127,6 +131,58 @@
       <div class="calendar-header">
         <h1 style="margin: 0">{{ curr_month_name }} {{ curr_year }}</h1>
       </div>
+
+      <div
+        id="taskModal"
+        style="
+          display: none;
+          position: fixed;
+          z-index: 1;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+        "
+      >
+        <div
+          style="
+            background: white;
+            margin: 10% auto;
+            padding: 30px;
+            width: 400px;
+            border-radius: 12px;
+          "
+        >
+          <h2>Add New Task</h2>
+          <form method="post">
+            {% csrf_token %} {{ form.as_p }}
+            <button type="submit" class="btn-add">Save Task</button>
+            <button
+              type="button"
+              onclick="toggleModal()"
+              style="
+                background: none;
+                border: none;
+                color: red;
+                cursor: pointer;
+              "
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <script>
+        function toggleModal() {
+          var modal = document.getElementById("taskModal");
+          modal.style.display =
+            modal.style.display === "none" ? "block" : "none";
+        }
+
+        document.querySelector(".btn-add").onclick = toggleModal;
+      </script>
 
       <div class="calendar-grid">
         <div class="day-header">SUN</div>

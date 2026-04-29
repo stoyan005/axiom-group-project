@@ -1,4 +1,4 @@
-# Author: Student 4
+# Author: Student 4 (Alexandra-Maria Paraschiv)
 # Contribution: Backend Database Model for Calendar Tasks
 
 from django.db import models

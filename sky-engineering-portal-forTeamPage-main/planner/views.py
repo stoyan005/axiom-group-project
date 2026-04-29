@@ -1,26 +1,33 @@
-# Author: Student 4
+# Author: Student 4 (Alexandra-Maria Paraschiv)
 # Contribution: Logic to generate calendar grid and fetch user tasks
 
-import calendar
-from datetime import datetime
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .forms import TaskForm
 from .models import Task
+from datetime import datetime
+import calendar
 
 def calendar_view(request):
     today = datetime.now()
-    curr_year = today.year
-    curr_month = today.month
+    
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
+            return redirect('calendar_home')
+    else:
+        form = TaskForm()
 
-    tasks = Task.objects.filter(date__year=curr_year, date__month=curr_month)
-
+    tasks = Task.objects.filter(user=request.user, date__month=today.month)
     cal = calendar.Calendar(firstweekday=6)
-    month_days = cal.monthdayscalendar(curr_year, curr_month)
+    month_days = cal.monthdayscalendar(today.year, today.month)
 
-    context = {
+    return render(request, 'planner/calendar.html', {
         'month_days': month_days,
         'tasks': tasks,
+        'form': form,
         'curr_month_name': today.strftime('%B'),
-        'curr_year': curr_year,
-    }
-    
-    return render(request, 'planner/calendar.html', context)
+        'curr_year': today.year,
+    })
