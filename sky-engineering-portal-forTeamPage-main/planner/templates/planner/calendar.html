@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Axiom Calendar</title>
+  </head>
+  <body>
+    <h1>{{ curr_month_name }} {{ curr_year }}</h1>
+    <table border="1">
+      <tr>
+        <th>Sun</th>
+        <th>Mon</th>
+        <th>Tue</th>
+        <th>Wed</th>
+        <th>Thu</th>
+        <th>Fri</th>
+        <th>Sat</th>
+      </tr>
+      {% for week in month_days %}
+      <tr>
+        {% for day in week %}
+        <td style="height: 80px; width: 80px; vertical-align: top">
+          {% if day != 0 %} {{ day }} {% endif %}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
