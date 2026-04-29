@@ -3,140 +3,205 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Teams Organisation</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script>
+			(function () {
+				const savedTheme = localStorage.getItem('sky-theme');
+				const prefersDark =
+					window.matchMedia &&
+					window.matchMedia('(prefers-color-scheme: dark)').matches;
+				document.documentElement.setAttribute(
+					'data-theme',
+					savedTheme || (prefersDark ? 'dark' : 'light')
+				);
+			})();
+		</script>
+		<title>Sky Engineering | Organisation</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
 		<link rel="stylesheet" href="{% static 'css/organ_list.css' %}" />
 	</head>
-
 	<body>
-		<div class="sidebar">
-			<div class="logo">
-				<img src="{% static 'images/sky_logo.jpg' %}" alt="Sky Logo" />
-			</div>
+		<div class="app-shell">
+			<aside class="app-sidebar">
+				<div class="app-logo">
+					<a href="{% url 'organization_list' %}">
+						<img src="{% static 'images/sky_logo.jpg' %}" alt="Sky logo" />
+					</a>
+				</div>
 
-			<nav class="nav">
-				<a href="#" class="nav-item">
-					<svg viewBox="0 0 24 24" class="icon">
-						<path
-							d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V9.5z"
-							fill="currentColor"
+				<nav class="nav-stack">
+					<a href="#" class="side-link"
+						><i class="bi bi-grid"></i><span>Dashboard</span></a
+					>
+					<a href="#" class="side-link"
+						><i class="bi bi-people"></i><span>Teams</span></a
+					>
+					<a href="{% url 'organization_list' %}" class="side-link active"
+						><i class="bi bi-building"></i><span>Organisation</span></a
+					>
+					<a href="#" class="side-link"
+						><i class="bi bi-chat"></i><span>Messages</span></a
+					>
+					<a href="#" class="side-link"
+						><i class="bi bi-calendar3"></i><span>Calendar</span></a
+					>
+					<a href="#" class="side-link"
+						><i class="bi bi-speedometer2"></i><span>Performance</span></a
+					>
+				</nav>
+
+				<div class="side-footer">© Sky 2026</div>
+			</aside>
+
+			<main class="app-main">
+				<header class="topbar">
+					<form
+						method="GET"
+						action="{% url 'organization_list' %}"
+						class="topbar-search"
+					>
+						<i class="bi bi-search"></i>
+						<input
+							type="text"
+							name="q"
+							value="{{ query|default:'' }}"
+							placeholder="Search teams, departments or dependencies..."
 						/>
-					</svg>
-					Dashboard
-				</a>
+					</form>
 
-				<a href="#" class="nav-item">
-					<svg viewBox="0 0 24 24" class="icon">
-						<path
-							d="M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05C16.88 13.89 19 15.03 19 16.5V19h5v-2.5C24 14.17 19.33 13 16 13z"
-							fill="currentColor"
-						/>
-					</svg>
-					Teams
-				</a>
-
-				<a href="#" class="nav-item active">
-					<svg viewBox="0 0 24 24" class="icon">
-						<path
-							d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"
-							fill="currentColor"
-						/>
-					</svg>
-					Organisation
-				</a>
-
-				<a href="#" class="nav-item">
-					<svg viewBox="0 0 24 24" class="icon">
-						<path
-							d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
-							fill="currentColor"
-						/>
-					</svg>
-					Messages
-				</a>
-
-				<a href="#" class="nav-item">
-					<svg viewBox="0 0 24 24" class="icon">
-						<path
-							d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 18H5V10h14v10z"
-							fill="currentColor"
-						/>
-					</svg>
-					Calendar
-				</a>
-
-				<a href="#" class="nav-item">
-					<svg viewBox="0 0 24 24" class="icon">
-						<path
-							d="M3 13h2v8H3v-8zm6-6h2v14H9V7zm6 4h2v10h-2V11zm6-8h2v18h-2V3z"
-							fill="currentColor"
-						/>
-					</svg>
-					Performance
-				</a>
-			</nav>
-
-			<div class="footer">© Sky 2026</div>
-		</div>
-
-		<!-- MAIN CONTENT -->
-		<div class="main-content">
-			<div class="page-header">
-				<h1 class="title">Teams Directory</h1>
-
-				<form method="GET" class="search-bar">
-					<input
-						type="text"
-						name="q"
-						value="{{ query|default:'' }}"
-						placeholder="Search teams..."
-					/>
-					<button type="submit">Search</button>
-				</form>
-			</div>
-
-			{% if teams %}
-
-			<div class="grid-container">
-				{% for team in teams %}
-
-				<a
-					href="?team_id={{ team.id }}{% if query %}&q={{ query }}{% endif %}"
-					class="team-card"
-				>
-					<div class="team-name">{{ team.name }}</div>
-
-					<div class="team-meta">
-						{{ team.department.name }}<br />
-						{{ team.department.organization.name }}
+					<div class="topbar-actions">
+						<button
+							id="theme-toggle"
+							class="icon-btn"
+							type="button"
+							aria-label="Toggle dark mode"
+						>
+							<i id="theme-toggle-icon" class="bi bi-moon"></i>
+						</button>
+						<a href="#" class="icon-btn" aria-label="Notifications"
+							><i class="bi bi-bell"></i
+						></a>
+						{% if user.is_authenticated %}
+						<form method="post" action="{% url 'logout' %}" style="margin: 0">
+							{% csrf_token %}
+							<button type="submit" class="icon-btn" aria-label="Logout">
+								<i class="bi bi-box-arrow-right"></i>
+							</button>
+						</form>
+						{% endif %}
 					</div>
-				</a>
+				</header>
 
-				{% endfor %}
-			</div>
+				<section class="workspace-card">
+					<div class="page-header">
+						<div>
+							<p class="eyebrow">Organisation</p>
+							<h1 class="title">Teams Directory</h1>
+						</div>
 
-			{% endif %} {% if selected_team %}
+						<form
+							method="GET"
+							action="{% url 'organization_list' %}"
+							class="search-bar"
+						>
+							<input
+								type="text"
+								name="q"
+								value="{{ query|default:'' }}"
+								placeholder="Search teams..."
+							/>
+							<button type="submit">Search</button>
+						</form>
+					</div>
 
-			<div class="detail-box">
-				<a href="{% url 'organization_list' %}" class="back-btn">← Back</a>
+					{% if selected_team %}
+					<div class="detail-box">
+						<a
+							href="{% url 'organization_list' %}{% if query %}?q={{ query }}{% endif %}"
+							class="back-btn"
+						>
+							<i class="bi bi-arrow-left"></i> Back
+						</a>
 
-				<h2>👥 {{ selected_team.name }}</h2>
+						<h2><i class="bi bi-people"></i> {{ selected_team.name }}</h2>
 
-				<p><strong>Department:</strong> {{ selected_team.department.name }}</p>
-				<p>
-					<strong>Organization:</strong>
-					{{ selected_team.department.organization.name }}
-				</p>
+						<p>
+							<strong>Department:</strong> {{ selected_team.department.name }}
+						</p>
+						<p>
+							<strong>Organisation:</strong> {{
+							selected_team.department.organization.name }}
+						</p>
 
-				<h3>Dependencies</h3>
-
-				{% for dep in selected_team.dependencies.all %}
-				<p>{{ dep.name }}</p>
-				{% empty %}
-				<p>No dependencies</p>
-				{% endfor %}
-			</div>
-
-			{% endif %}
+						<h3>Dependencies</h3>
+						<div>
+							{% for dep in selected_team.dependencies.all %}
+							<span class="data-pill">{{ dep.name }}</span>
+							{% empty %}
+							<p class="small-note">No dependencies recorded.</p>
+							{% endfor %}
+						</div>
+					</div>
+					{% else %} {% if teams %}
+					<div class="grid-container">
+						{% for team in teams %}
+						<a
+							href="?team_id={{ team.id }}{% if query %}&q={{ query }}{% endif %}"
+							class="team-card org-card"
+						>
+							<div>
+								<div class="team-name">{{ team.name }}</div>
+								<div class="team-meta">
+									{{ team.department.name }}<br />
+									{{ team.department.organization.name }}
+								</div>
+							</div>
+							<span class="small-note"
+								>View details <i class="bi bi-arrow-right"></i
+							></span>
+						</a>
+						{% endfor %}
+					</div>
+					{% else %}
+					<div class="empty-state">
+						<h3>No teams found</h3>
+						<p>
+							Import the Excel file first with
+							<strong>py manage.py import_excel</strong>, or try another
+							search.
+						</p>
+					</div>
+					{% endif %} {% endif %}
+				</section>
+			</main>
 		</div>
+
+		<script>
+			(function () {
+				const root = document.documentElement;
+				const button = document.getElementById('theme-toggle');
+				const icon = document.getElementById('theme-toggle-icon');
+				function applyTheme(theme) {
+					root.setAttribute('data-theme', theme);
+					localStorage.setItem('sky-theme', theme);
+					if (icon) icon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
+				}
+				applyTheme(root.getAttribute('data-theme') || 'light');
+				if (button) {
+					button.addEventListener('click', function () {
+						applyTheme(
+							root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+						);
+					});
+				}
+			})();
+		</script>
 	</body>
 </html>
