@@ -1,9 +1,3 @@
-"""
-Forms for the Student 3 messaging feature.
-
-Forms keep input handling separate from the views.  This makes the views easier
-to read and also lets Django handle validation and HTML widgets consistently.
-"""
 
 from django import forms
 from django.contrib.auth.models import User
@@ -11,12 +5,6 @@ from .models import Message
 
 
 class ComposeMessageForm(forms.ModelForm):
-    """
-    Form used for both composing a new message and editing a saved draft.
-
-    It is based on the Message model, but includes a custom recipients field so
-    users can choose one or more registered users to send the message to.
-    """
 
     # ModelMultipleChoiceField allows more than one recipient to be selected.
     recipients = forms.ModelMultipleChoiceField(
@@ -48,12 +36,6 @@ class ComposeMessageForm(forms.ModelForm):
         }
 
     def __init__(self, *args, current_user=None, **kwargs):
-        """
-        Customise the form each time it is created.
-
-        The current user is passed in by the view so they can be excluded from
-        the recipient list.  This prevents users sending messages to themselves.
-        """
         super().__init__(*args, **kwargs)
 
         if current_user:

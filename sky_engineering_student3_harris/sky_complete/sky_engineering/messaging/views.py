@@ -1,10 +1,3 @@
-"""
-Views for the Student 3 messaging module.
-
-Each view handles one browser action, such as opening the inbox, composing a
-message, saving a draft, or changing read status.  The @login_required decorator
-protects these pages so only authenticated users can access messaging.
-"""
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -18,7 +11,6 @@ from .forms import ComposeMessageForm
 
 @login_required
 def inbox(request):
-    """Display received sent messages for the logged-in user."""
 
     # Find all message-state rows that belong to the current user.  The actual
     # Message and sender are selected at the same time to reduce database queries.
@@ -41,7 +33,6 @@ def inbox(request):
 
 @login_required
 def sent(request):
-    """Display messages sent by the logged-in user."""
 
     # A sent message is one where the current user is the sender and status is sent.
     sent_messages = Message.objects.filter(
@@ -57,7 +48,6 @@ def sent(request):
 
 @login_required
 def drafts(request):
-    """Display draft messages that belong to the logged-in user."""
 
     # Drafts are ordered by updated_at so recently edited drafts appear first.
     draft_messages = Message.objects.filter(
@@ -73,7 +63,6 @@ def drafts(request):
 
 @login_required
 def compose(request):
-    """Create a new message and either send it or save it as a draft."""
 
     # Create an empty form for GET requests.  current_user removes the sender
     # from the recipient list.
@@ -121,7 +110,6 @@ def compose(request):
 
 @login_required
 def edit_draft(request, message_id):
-    """Open an existing draft so the sender can edit or send it."""
 
     # The lookup confirms the draft belongs to the logged-in user.  This prevents
     # one user from editing another user's draft by changing the URL.
@@ -182,7 +170,6 @@ def edit_draft(request, message_id):
 
 @login_required
 def view_message(request, message_id):
-    """Display one message and mark it as read if the viewer is a recipient."""
 
     msg = get_object_or_404(Message, pk=message_id)
 
@@ -219,7 +206,6 @@ def view_message(request, message_id):
 
 @login_required
 def toggle_read(request, message_id):
-    """Switch a message between read and unread for the current recipient."""
 
     # get_object_or_404 ensures the current user is actually a recipient.
     status_obj = get_object_or_404(
@@ -241,12 +227,6 @@ def toggle_read(request, message_id):
 
 @login_required
 def delete_message(request, message_id):
-    """
-    Delete behaviour for the current user.
-
-    Recipients get a soft delete so the message disappears from their inbox only.
-    Senders can permanently delete their own sent messages or drafts.
-    """
 
     msg = get_object_or_404(Message, pk=message_id)
     referer = request.META.get('HTTP_REFERER', '')
@@ -275,7 +255,6 @@ def delete_message(request, message_id):
 
 @login_required
 def unread_count_api(request):
-    """Return the unread count as JSON for future dynamic navbar updates."""
 
     count = MessageRecipientStatus.objects.filter(
         user=request.user,

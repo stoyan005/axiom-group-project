@@ -1,4 +1,3 @@
-"""Django admin setup for account/profile data."""
 
 from django.contrib import admin
 from .models import UserProfile
@@ -6,7 +5,6 @@ from .models import UserProfile
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    """Makes UserProfile records easier to inspect in Django admin."""
 
     # Columns shown on the admin list page.
     list_display = ('user', 'job_title', 'department', 'slack_handle', 'updated_at')

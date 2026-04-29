@@ -1,10 +1,3 @@
-"""
-Django settings for the Sky Engineering Portal coursework project.
-
-This file controls the project-wide configuration: installed apps, middleware,
-database, templates, static files and login redirects.  The comments are written
-for coursework marking so the purpose of each important setting is clear.
-"""
 
 from pathlib import Path
 

@@ -1,14 +1,3 @@
-"""
-Automated tests for the Student 3 messaging workflow.
-
-These tests are included so the report has evidence that the main messaging
-features work.  They can be run with:
-
-    py manage.py test
-
-The tests use Django's test client, which simulates a browser logging in and
-visiting pages without needing to start the development server manually.
-"""
 
 from django.test import TestCase
 from django.urls import reverse
@@ -17,10 +6,8 @@ from .models import Message, MessageRecipientStatus
 
 
 class MessagingWorkflowTests(TestCase):
-    """Covers the most important user journeys for the messaging app."""
 
     def setUp(self):
-        """Create users used by every test."""
         self.sender = User.objects.create_user(
             username='sender',
             password='Password123!',
@@ -39,7 +26,6 @@ class MessagingWorkflowTests(TestCase):
         )
 
     def test_send_message_creates_recipient_status(self):
-        """Sending a message should create a sent Message and recipient state."""
         self.client.login(username='sender', password='Password123!')
         response = self.client.post(reverse('messaging:compose'), {
             'recipients': [self.recipient.id],
@@ -59,7 +45,6 @@ class MessagingWorkflowTests(TestCase):
         )
 
     def test_save_draft_and_send_later(self):
-        """A draft can be saved, reopened, edited and sent later."""
         self.client.login(username='sender', password='Password123!')
         response = self.client.post(reverse('messaging:compose'), {
             'recipients': [self.recipient.id],
@@ -86,7 +71,6 @@ class MessagingWorkflowTests(TestCase):
         self.assertEqual(draft.subject, 'Draft Plan Final')
 
     def test_inbox_marks_message_as_read_when_viewed(self):
-        """Opening a received message should mark it as read for that recipient."""
         message = Message.objects.create(
             sender=self.sender,
             subject='Read test',
@@ -104,7 +88,6 @@ class MessagingWorkflowTests(TestCase):
         self.assertIsNotNone(status.read_at)
 
     def test_toggle_read_changes_read_state(self):
-        """The recipient can manually mark a message read/unread."""
         message = Message.objects.create(
             sender=self.sender,
             subject='Toggle test',
@@ -125,7 +108,6 @@ class MessagingWorkflowTests(TestCase):
         self.assertFalse(status.is_read)
 
     def test_unauthorised_user_cannot_view_private_message(self):
-        """A user who is not sender or recipient should not be able to view it."""
         message = Message.objects.create(
             sender=self.sender,
             subject='Private',

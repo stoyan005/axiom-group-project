@@ -1,10 +1,3 @@
-"""
-Main URL configuration for the Sky Engineering Portal.
-
-This file connects the project-level routes to the individual Django apps.  It is
-also the integration point where other group members can include their own app
-URLs without changing the messaging code.
-"""
 
 from django.contrib import admin
 from django.urls import path, include

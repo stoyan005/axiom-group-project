@@ -1,8 +1,4 @@
 {% extends "base/base.html" %}
-{% comment %}
-Compose/edit-draft page. The same template is used for sending new messages and editing saved drafts.
-  Comments in this template are written to make the coursework code easier to follow during marking/demo.
-{% endcomment %}
 {% block title %}{% if draft %}Edit Draft{% else %}New Message{% endif %} – Sky Engineering Portal{% endblock %}
 {% block extra_css %}
 <style>
@@ -13,9 +9,6 @@ Compose/edit-draft page. The same template is used for sending new messages and 
 </style>
 {% endblock %}
 {% block content %}
-{% comment %}
-Compose page is reused for both new messages and editing saved drafts.
-{% endcomment %}
 <div class="workspace-card">
     <div class="page-heading">
         <div>
@@ -28,9 +21,6 @@ Compose page is reused for both new messages and editing saved drafts.
     <div class="compose-layout">
         <div class="card">
             <div class="card-body p-4 p-lg-5">
-                {% comment %}
-CSRF token protects the form submission. Django handles validation through ComposeMessageForm.
-{% endcomment %}
                 <form method="post" id="compose-form">
                     {% csrf_token %}
 

@@ -1,11 +1,3 @@
-"""
-Messaging database models for the Student 3 individual element.
-
-This file is the main database design for the messaging feature.  It uses two
-models instead of one because a message can be sent to more than one person, but
-each recipient still needs their own read/deleted state.  For example, if one
-recipient deletes a message it should not disappear for every other recipient.
-"""
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -13,13 +5,6 @@ from django.utils import timezone
 
 
 class Message(models.Model):
-    """
-    Stores the message content itself.
-
-    A Message is created by one sender and can be linked to many recipients.
-    The recipient-specific information is stored in MessageRecipientStatus
-    below, which acts as the custom through table for the many-to-many relation.
-    """
 
     # Status constants are used instead of writing raw strings throughout the
     # code.  This keeps the code easier to maintain and avoids spelling errors.
@@ -72,16 +57,9 @@ class Message(models.Model):
         ordering = ['-sent_at', '-created_at']
 
     def __str__(self):
-        """Readable label used in Django admin and debug output."""
         return f"{self.subject or '(no subject)'} — {self.sender}"
 
     def get_recipients_display(self):
-        """
-        Return a comma-separated list of recipient names.
-
-        This is used by the Sent and Drafts pages so the template does not need
-        to contain database logic.  Keeping this here makes the templates cleaner.
-        """
         users = self.messagerecipientstatus_set.select_related('user')
         names = []
         for rs in users:
@@ -91,25 +69,12 @@ class Message(models.Model):
         return ', '.join(names) if names else '(no recipients)'
 
     def mark_sent(self):
-        """
-        Convert a draft into a sent message.
-
-        This small helper prevents repeating the same status/timestamp code in
-        the compose and edit_draft views.
-        """
         self.status = self.STATUS_SENT
         self.sent_at = timezone.now()
         self.save()
 
 
 class MessageRecipientStatus(models.Model):
-    """
-    Links a message to one recipient and stores that recipient's state.
-
-    This is the reason the messaging system works properly for multiple users.
-    Each recipient can read, unread, or delete their own copy without changing
-    how the message appears for other recipients.
-    """
 
     # The message that this recipient-state row belongs to.
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
@@ -132,16 +97,9 @@ class MessageRecipientStatus(models.Model):
         unique_together = ('message', 'user')
 
     def __str__(self):
-        """Readable label for Django admin."""
         return f"{self.user.username} / {self.message.subject}"
 
     def mark_read(self):
-        """
-        Mark the message as read for this recipient only.
-
-        The guard avoids unnecessarily updating the database if the message has
-        already been read.
-        """
         if not self.is_read:
             self.is_read = True
             self.read_at = timezone.now()

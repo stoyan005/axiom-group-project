@@ -1,21 +1,11 @@
 {% extends "base/auth_base.html" %}
 {% load static %}
-{% comment %}
-Registration page. This page uses the same auth layout as login and lets new users create a local Django account.
-  Comments in this template are written to make the coursework code easier to follow during marking/demo.
-{% endcomment %}
 {% block title %}Register – Sky Engineering Portal{% endblock %}
 {% block content %}
-{% comment %}
-Same auth shell as login so users can choose light/dark mode before entering the app.
-{% endcomment %}
 <div class="auth-shell">
     <div class="auth-frame">
         <div class="auth-visual"></div>
         <div class="auth-panel">
-            {% comment %}
-Theme toggle saves the selected mode so the logged-in pages use the same theme.
-{% endcomment %}
             <button type="button" id="theme-toggle" class="auth-theme-toggle" aria-label="Toggle light and dark mode"><i id="theme-toggle-icon" class="bi bi-moon"></i><span>Theme</span></button>
             <div class="auth-card" style="max-width:420px;">
                 <div class="auth-logo"><img src="{% static 'img/sky_logo.png' %}" alt="Sky"></div>
@@ -47,9 +37,6 @@ Theme toggle saves the selected mode so the logged-in pages use the same theme.
                         </div>
                         <div class="col-12 password-field">
                             <label class="form-label">Password</label>
-                            {% comment %}
-Password wrapper is used so the eye icon does not float out of position.
-{% endcomment %}
                             <div class="password-input-wrap">
                                 {{ form.password1 }}
                                 <button type="button" class="toggle-password" data-target="{{ form.password1.id_for_label }}" aria-label="Show password"><i class="bi bi-eye"></i></button>

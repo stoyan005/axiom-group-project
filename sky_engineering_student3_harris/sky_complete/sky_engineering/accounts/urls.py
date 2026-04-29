@@ -1,4 +1,3 @@
-"""URL routes for account pages."""
 
 from django.urls import path
 from . import views

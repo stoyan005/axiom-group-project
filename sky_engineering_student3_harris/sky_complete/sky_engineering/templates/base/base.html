@@ -1,8 +1,4 @@
 {% load static %}
-{% comment %}
-Shared logged-in layout. It controls the sidebar, top search bar, message notification icon, dark-mode variables and reusable styling for authenticated pages.
-  Comments in this template are written to make the coursework code easier to follow during marking/demo.
-{% endcomment %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,7 +61,7 @@ Shared logged-in layout. It controls the sidebar, top search bar, message notifi
         }
 
 
-        /* Dark mode contrast fixes */
+        
         :root[data-theme="dark"] body,
         :root[data-theme="dark"] .workspace-card,
         :root[data-theme="dark"] .card,
@@ -665,6 +661,9 @@ Shared logged-in layout. It controls the sidebar, top search bar, message notifi
                     <input type="text" placeholder="Search teams, members or locations...">
                 </div>
                 <div class="topbar-actions">
+                    <button type="button" id="theme-toggle" class="icon-btn" aria-label="Toggle light and dark mode" title="Toggle light and dark mode">
+                        <i id="theme-toggle-icon" class="bi bi-moon"></i>
+                    </button>
                     <a href="{% url 'messaging:inbox' %}" class="icon-btn position-relative text-decoration-none" aria-label="Notifications">
                         <i class="bi bi-bell"></i>
                         {% if unread_count %}

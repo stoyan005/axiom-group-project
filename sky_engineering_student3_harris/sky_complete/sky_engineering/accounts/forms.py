@@ -1,9 +1,3 @@
-"""
-Forms for registration and profile editing.
-
-The forms keep validation and widget styling separate from the views.  This is
-cleaner than manually reading raw POST data inside view functions.
-"""
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
@@ -12,13 +6,6 @@ from .models import UserProfile
 
 
 class RegistrationForm(UserCreationForm):
-    """
-    Local account registration form.
-
-    The coursework brief asks for self-registration using local accounts.  This
-    form builds on Django's UserCreationForm so password validation and hashing
-    are handled by Django rather than custom code.
-    """
 
     # These fields are required so the profile has enough basic information.
     first_name = forms.CharField(
@@ -43,7 +30,6 @@ class RegistrationForm(UserCreationForm):
         }
 
     def __init__(self, *args, **kwargs):
-        """Add Bootstrap styling and placeholders to the password fields."""
         super().__init__(*args, **kwargs)
         self.fields['password1'].widget.attrs.update({
             'class': 'form-control',
@@ -55,12 +41,6 @@ class RegistrationForm(UserCreationForm):
         })
 
     def save(self, commit=True):
-        """
-        Save the user and copy extra form fields into the User object.
-
-        commit=False is used first so we can attach email/name values before the
-        User is written to the database.
-        """
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
         user.first_name = self.cleaned_data['first_name']
@@ -75,7 +55,6 @@ class RegistrationForm(UserCreationForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    """Form for updating the built-in User fields on the profile page."""
 
     first_name = forms.CharField(
         max_length=50,
@@ -95,7 +74,6 @@ class ProfileUpdateForm(forms.ModelForm):
 
 
 class ExtendedProfileForm(forms.ModelForm):
-    """Form for updating the extra UserProfile fields."""
 
     class Meta:
         model = UserProfile

@@ -1,16 +1,8 @@
-"""
-Context processors for the messaging app.
-
-A context processor adds values to every template automatically.  Here it allows
-the navbar to show the unread message count without every view repeating the same
-query.
-"""
 
 from .models import MessageRecipientStatus, Message
 
 
 def unread_count(request):
-    """Return the unread message count for authenticated users."""
 
     if request.user.is_authenticated:
         count = MessageRecipientStatus.objects.filter(

@@ -1,9 +1,3 @@
-"""
-Views for registration, profile editing and password changes.
-
-These views support the wider coursework requirement for users to self-register,
-log in, update profiles, change passwords and use a local Django account.
-"""
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, update_session_auth_hash
@@ -15,7 +9,6 @@ from .models import UserProfile
 
 
 def register(request):
-    """Allow a new user to create a local Sky Engineering Portal account."""
 
     # If someone is already logged in, send them straight to the main app.
     if request.user.is_authenticated:
@@ -39,7 +32,6 @@ def register(request):
 
 @login_required
 def profile(request):
-    """Show and update the logged-in user's profile details."""
 
     # Make sure every user always has a linked profile record.
     profile_obj, _ = UserProfile.objects.get_or_create(user=request.user)
@@ -67,7 +59,6 @@ def profile(request):
 
 @login_required
 def change_password(request):
-    """Allow a logged-in user to change their own password securely."""
 
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)

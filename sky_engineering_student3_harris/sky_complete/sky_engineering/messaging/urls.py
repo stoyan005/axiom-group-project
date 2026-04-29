@@ -1,4 +1,3 @@
-"""URL routes for the Student 3 messaging feature."""
 
 from django.urls import path
 from . import views

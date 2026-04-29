@@ -1,8 +1,4 @@
 {% extends "base/base.html" %}
-{% comment %}
-Inbox page for Student 3. Shows received messages in a conversation-list layout and previews the selected message.
-  Comments in this template are written to make the coursework code easier to follow during marking/demo.
-{% endcomment %}
 {% block title %}Messages – Sky Engineering Portal{% endblock %}
 {% block extra_css %}
 <style>
@@ -44,9 +40,6 @@ Inbox page for Student 3. Shows received messages in a conversation-list layout 
 </style>
 {% endblock %}
 {% block content %}
-{% comment %}
-workspace-card is the main rounded panel used by the logged-in pages.
-{% endcomment %}
 <div class="workspace-card">
     <div class="page-heading mb-3">
         <div>
@@ -63,9 +56,6 @@ workspace-card is the main rounded panel used by the logged-in pages.
     </div>
 
     <div class="message-app">
-        {% comment %}
-Left panel: list of received message threads for the current user.
-{% endcomment %}
         <aside class="thread-panel">
             <div class="thread-header d-flex justify-content-between align-items-center">
                 <h3>Messages</h3>
@@ -88,9 +78,6 @@ Left panel: list of received message threads for the current user.
             </div>
         </aside>
 
-        {% comment %}
-Right panel: preview of the currently selected/newest message.
-{% endcomment %}
         <section class="chat-panel">
             {% if selected_status %}
             <div class="chat-header">
