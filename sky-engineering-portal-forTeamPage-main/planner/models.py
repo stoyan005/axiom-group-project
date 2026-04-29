@@ -1,4 +1,6 @@
 # Author: Student 4
+# Contribution: Backend Database Model for Calendar Tasks
+
 from django.db import models
 from django.contrib.auth.models import User
 
