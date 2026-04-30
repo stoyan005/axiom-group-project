@@ -3,7 +3,7 @@
 
 ### Stack
 - Python 3.10+
-- Django 4.2
+- Django 6.0.2
 - SQLite (db.sqlite3 — auto-created on first migrate)
 - Bootstrap 5.3 + Bootstrap Icons (CDN)
 - DM Sans font (Google Fonts CDN)
