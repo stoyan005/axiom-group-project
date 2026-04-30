@@ -19,6 +19,15 @@ python manage.py migrate
 
 # 3. (Optional) Create a superuser for admin panel
 python manage.py createsuperuser
+## Admin Panel
+
+The Django admin panel can be accessed at:
+
+http://127.0.0.1:8000/admin/
+
+To create an admin/superuser account, run:
+
+python manage.py createsuperuser
 
 # 4. Run the development server
 python manage.py runserver
